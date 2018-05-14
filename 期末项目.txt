@@ -1,4 +1,4 @@
 成员：谢康 1753402   陈东 1753731   张尧 1753948
 组长：谢康
-项目：斗地主
+项目：球球大作战
 git地址：https://github.com/kangkang7777/The-final-project
