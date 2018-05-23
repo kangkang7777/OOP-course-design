@@ -1,8 +1,8 @@
 #include "MenuScene.h"
 #include "SimpleAudioEngine.h"
-
+#include "ui/CocosGUI.h"
 USING_NS_CC;
-
+using namespace ui;
 Scene* MenuScene::createScene()
 {
 	return MenuScene::create();
@@ -51,23 +51,14 @@ bool MenuScene::init()
 		closeItem->setPosition(Vec2(x, y));
 	}
 	//¿ªÊ¼°´Å¥
-	auto StartGame = MenuItemImage::create(
-		"StartNormal.png",
-		"StartSelected.png",
-		CC_CALLBACK_1(MenuScene::gameStartCallback, this));
 
-	if (StartGame == nullptr ||
-		StartGame->getContentSize().width <= 0 ||
-		StartGame->getContentSize().height <= 0)
-	{
-		problemLoading("'StartNormal.png' and 'StartSelected.png'");
-	}
-	else
-	{
-		float x = origin.x + visibleSize.width - StartGame->getContentSize().width / 2.5;
-		float y = origin.y + StartGame->getContentSize().height / 4;
-		StartGame->setPosition(Vec2(x,y));
-	}
+	auto StartGame = Button::create("StartNormal.png", "StartSelected.png", "StartSelected.png");
+	StartGame->setTouchEnabled(true);
+
+	StartGame->setPosition(Vec2(640,480));
+	this->addChild(StartGame,10);
+	
+	
 
 	// create exit menu, it's an autorelease object
 	auto menu_exit = Menu::create(closeItem, NULL);
@@ -75,10 +66,6 @@ bool MenuScene::init()
 	menu_exit->setPosition(Vec2(0,0));
 	this->addChild(menu_exit, 1);
 
-	// start game menu, it's an autorelease object
-	auto menu_start = Menu::create(StartGame, NULL);
-	menu_start->setPosition(Vec2(0, 0));
-	this->addChild(menu_start, 1);
 
 	/////////////////////////////
 	// 3. add your codes below...

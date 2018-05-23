@@ -1,6 +1,6 @@
 
 #include "cocos2d.h"
-
+#include<iostream>
 class MenuScene : public cocos2d::Scene
 {
 public:
