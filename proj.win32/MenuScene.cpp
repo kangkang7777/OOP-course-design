@@ -1,8 +1,5 @@
 #include "MenuScene.h"
-#include "SimpleAudioEngine.h"
-#include "ui/CocosGUI.h"
-USING_NS_CC;
-using namespace ui;
+
 Scene* MenuScene::createScene()
 {
 	return MenuScene::create();
@@ -52,10 +49,13 @@ bool MenuScene::init()
 	}
 	//开始按钮
 
-	auto StartGame = Button::create("StartNormal.png", "StartSelected.png", "StartSelected.png");
+	//auto StartGame = Button::create("StartNormal.png", "StartSelected.png", "StartSelected.png");
+	auto StartGame = Button::create();
 	StartGame->setTouchEnabled(true);
-
-	StartGame->setPosition(Vec2(640,480));
+	StartGame->setTitleText("Start Game");
+	StartGame->setTitleFontSize(32);
+	StartGame->setPosition(Vec2(640,160));
+	StartGame->addTouchEventListener(CC_CALLBACK_2(MenuScene::gameStartCallback, this));
 	this->addChild(StartGame,10);
 	
 	
@@ -70,29 +70,29 @@ bool MenuScene::init()
 	/////////////////////////////
 	// 3. add your codes below...
 
-	// add a label shows "Hello World"
+	// add a label shows the words
 	// create and initialize a label
 
-	auto label = Label::createWithTTF("Game menu", "fonts/Marker Felt.ttf", 24);
-	if (label == nullptr)
-	{
-		problemLoading("'fonts/Marker Felt.ttf'");
-	}
-	else
-	{
+	//auto label = Label::createWithTTF("球球大作战", "fonts/Marker Felt.ttf", 36);
+	//if (label == nullptr)
+	//{
+	//	problemLoading("'fonts/Marker Felt.ttf'");
+	//}
+	//else
+	//{
 		// position the label on the center of the screen
-		label->setPosition(Vec2(origin.x + visibleSize.width / 2,
-			origin.y + visibleSize.height - label->getContentSize().height));
+	//	label->setPosition(Vec2(origin.x + visibleSize.width / 2,
+	//		origin.y + visibleSize.height - label->getContentSize().height));
 
 		// add the label as a child to this layer
-		this->addChild(label, 1);
-	}
+	//	this->addChild(label, 1);
+	//}
 
 	// add "MenuScene" splash screen"
-	auto sprite = Sprite::create("MenuScene.jpg");
+	auto sprite = Sprite::create("MenuScene.png");
 	if (sprite == nullptr)
 	{
-		problemLoading("'MenuScene.jpg'");
+		problemLoading("'MenuScene.png'");
 	}
 	else
 	{
@@ -124,9 +124,14 @@ void MenuScene::menuCloseCallback(Ref* pSender)
 }
 
 
-void MenuScene::gameStartCallback(Ref* pSender)
+void MenuScene::gameStartCallback(Ref *pSender, cocos2d::ui::Widget::TouchEventType type)
 {
-	//场景跳转至正式游戏界面
+	//场景跳转至正式游戏界面,进栈
+     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
+	{
+		Director::getInstance()->pushScene(GameScene::createScene());
+	}
+	
 //	Director::getInstance()->runWithScene(GameScene::createScene());
 	
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
