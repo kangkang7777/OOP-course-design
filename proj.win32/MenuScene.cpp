@@ -55,8 +55,6 @@ bool MenuScene::init()
 	auto StartGame = Button::create("StartNormal.png", "StartSelected.png", "StartSelected.png");
 	StartGame->setTouchEnabled(true);
 
-	float x = origin.x + visibleSize.width - closeItem->getContentSize().width / 2;
-	float y = origin.y + closeItem->getContentSize().height / 2;
 	StartGame->setPosition(Vec2(640,480));
 	this->addChild(StartGame,10);
 	
