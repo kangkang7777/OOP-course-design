@@ -57,6 +57,19 @@ bool GameScene::init()
 	/////////////////////////////
 	// 3. add your codes below...
 
+	//×¢²á¼àÌý
+	auto listener = EventListenerKeyboard::create();
+	//²¶×½¼àÌý
+	listener->onKeyPressed = [](EventKeyboard::KeyCode  keycode, Event * )
+	{
+		
+		log("KeyPress:%d", KEY_ESCAPE);
+	};
+	listener->onKeyReleased = [](EventKeyboard::KeyCode  keycode, Event * event)
+	{
+		log("KeyRelease:%d", KEY_ESCAPE);
+	};
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 	// add a label shows "Hello World"
 	// create and initialize a label
 
@@ -93,11 +106,11 @@ bool GameScene::init()
 }
 
 
+
 void GameScene::menuCloseCallback(Ref* pSender)
 {
 	//·µ»Ø²Ëµ¥½çÃæ£¬³öÕ»
 	Director::getInstance()->popScene();
-
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 	exit(0);
 #endif
@@ -106,6 +119,4 @@ void GameScene::menuCloseCallback(Ref* pSender)
 
 	//EventCustom customEndEvent("game_scene_close_event");
 	//_eventDispatcher->dispatchEvent(&customEndEvent);
-
-
 }
