@@ -1,8 +1,5 @@
 #include "MenuScene.h"
-#include "SimpleAudioEngine.h"
-#include "ui/CocosGUI.h"
-USING_NS_CC;
-using namespace ui;
+
 Scene* MenuScene::createScene()
 {
 	return MenuScene::create();
@@ -58,6 +55,7 @@ bool MenuScene::init()
 	StartGame->setTitleText("Start Game");
 	StartGame->setTitleFontSize(32);
 	StartGame->setPosition(Vec2(640,160));
+	StartGame->addTouchEventListener(CC_CALLBACK_2(MenuScene::gameStartCallback, this));
 	this->addChild(StartGame,10);
 	
 	
@@ -126,9 +124,14 @@ void MenuScene::menuCloseCallback(Ref* pSender)
 }
 
 
-void MenuScene::gameStartCallback(Ref* pSender)
+void MenuScene::gameStartCallback(Ref *pSender, cocos2d::ui::Widget::TouchEventType type)
 {
-	//场景跳转至正式游戏界面
+	//场景跳转至正式游戏界面,进栈
+     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
+	{
+		Director::getInstance()->pushScene(GameScene::createScene());
+	}
+	
 //	Director::getInstance()->runWithScene(GameScene::createScene());
 	
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
