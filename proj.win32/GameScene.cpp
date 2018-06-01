@@ -1,6 +1,7 @@
 #include "GameScene.h"
 
-
+auto visibleSize = Director::getInstance()->getVisibleSize();
+Vec2 origin = Director::getInstance()->getVisibleOrigin();
 Scene* GameScene::createScene()
 {
 	return GameScene::create();
@@ -23,8 +24,7 @@ bool GameScene::init()
 		return false;
 	}
 
-	auto visibleSize = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
 
 	/////////////////////////////
 	// 2. add a menu item with "X" image, which is clicked to quit the program
@@ -48,52 +48,70 @@ bool GameScene::init()
 		float y = origin.y + closeItem->getContentSize().height / 2;
 		closeItem->setPosition(Vec2(x, y));
 	}
+	//生成背景
+	GameScene::background();
+
+	//create a player
+	auto player = CCSprite::create("player.png");
+	player->setPosition(ccp(visibleSize.width / 2, visibleSize.height / 2));
+	this->addChild(player, 1);
 
 	// create menu, it's an autorelease object
 	auto menu = Menu::create(closeItem, NULL);
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 1);
 
-	/////////////////////////////
-	// 3. add your codes below...
 
-	
-	// add a label shows "Hello World"
-	// create and initialize a label
-
-	auto label = Label::createWithTTF("Hello Shit", "fonts/Marker Felt.ttf", 24);
-	if (label == nullptr)
+	auto myMouseListener = EventListenerMouse::create();//创建事件监听器鼠标事件
+	//lambda expression
+	//鼠标被按下
+	extern float mouse_down_x, mouse_down_y, mouse_up_x, mouse_up_y;
+	myMouseListener->onMouseDown = [=](Event *event)
 	{
-		problemLoading("'fonts/Marker Felt.ttf'");
-	}
-	else
+		EventMouse* e = (EventMouse*)event;
+		mouse_down_x = e->getCursorX();
+		mouse_down_y = e->getCursorY();
+	};
+	//鼠标移动
+	myMouseListener->onMouseMove = [=](Event *event)
 	{
-		// position the label on the center of the screen
-		label->setPosition(Vec2(origin.x + visibleSize.width / 2,
-			origin.y + visibleSize.height - label->getContentSize().height));
+		
 
-		// add the label as a child to this layer
-		this->addChild(label, 1);
-	}
-
-	// add "GameScene" splash screen"
-	auto sprite = Sprite::create("GameScene.png");
-	if (sprite == nullptr)
+	};
+	//鼠标按键弹起
+	myMouseListener->onMouseUp = [=](Event *event)
 	{
-		problemLoading("'GameScene.png'");
-	}
-	else
-	{
-		// position the sprite on the center of the screen
-		sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+		EventMouse* e = (EventMouse*)event;
+		mouse_up_x = e->getCursorX();
+		mouse_up_y = e->getCursorY();
+		
+	};
 
-		// add the sprite as a child to this layer
-		this->addChild(sprite, 0);
-	}
+	//将事件监听器与场景绑定
+	auto _eventDispatcher = Director::getInstance()->getEventDispatcher();
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(myMouseListener, this);
 	return true;
 }
 
 
+void GameScene::background()
+{
+	auto map = Sprite::create("background.jpg");
+	map->setAnchorPoint(Vec2(0.5, 0.5));
+	map->setPosition(0, 0);
+	this->addChild(map, 0);
+}
+
+void GameScene::Player()
+{
+	
+}
+
+void GameScene::move()
+{
+	//player->setPosition(ccp(visibleSize.width / 2, visibleSize.height / 2));
+
+}
 
 void GameScene::menuCloseCallback(Ref* pSender)
 {
