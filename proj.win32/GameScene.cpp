@@ -48,6 +48,7 @@ bool GameScene::init()
 		float y = origin.y + closeItem->getContentSize().height / 2;
 		closeItem->setPosition(Vec2(x, y));
 	}
+
 	//生成背景
 	GameScene::background();
 
@@ -62,34 +63,59 @@ bool GameScene::init()
 	this->addChild(menu, 1);
 
 
-	auto myMouseListener = EventListenerMouse::create();//创建事件监听器鼠标事件
+	auto myMouseListener = EventListenerTouchOneByOne::create();//创建事件监听器鼠标事件
 	//lambda expression
 	//鼠标被按下
-	extern float mouse_down_x, mouse_down_y, mouse_up_x, mouse_up_y;
-	myMouseListener->onMouseDown = [=](Event *event)
-	{
-		EventMouse* e = (EventMouse*)event;
-		mouse_down_x = e->getCursorX();
-		mouse_down_y = e->getCursorY();
-	};
-	//鼠标移动
-	myMouseListener->onMouseMove = [=](Event *event)
-	{
-		
 
-	};
-	//鼠标按键弹起
-	myMouseListener->onMouseUp = [=](Event *event)
-	{
-		EventMouse* e = (EventMouse*)event;
-		mouse_up_x = e->getCursorX();
-		mouse_up_y = e->getCursorY();
+	//myMouseListener->onTouchBegan = [=](Event *event)
+	//{
+	//	
+	//	EventMouse* e = (EventMouse*)event;
+	//	//mouse_down_x = e->getCursorX();
+	//	//mouse_down_y = visibleSize.height + e->getCursorY();
+
+	//};
+	////鼠标按键移动
+	//myMouseListener->onMouseMove = [=](Event *event)
+	//{
+	//	float mouse_move_x, mouse_move_y,
+	//		mouse_down_x, mouse_down_y;
+	//	EventMouse* e = (EventMouse*)event;
+	//	mouse_move_x = e->getCursorX();
+	//	mouse_move_y = visibleSize.height + e->getCursorY();
+	//	mouse_down_x = getPreviousLocation();
+
+	//	auto moveBy = MoveBy::create(1, Vec2(mouse_move_x - mouse_down_x,
+	//		mouse_move_y - mouse_down_y));
+	//	player->runAction(moveBy);
+	//};
+	myMouseListener->onTouchBegan = [](Touch* touch, Event* event) {
+		auto target = static_cast<Sprite*>(event->getCurrentTarget());
+		Point startPoint = touch->getLocationInView();
 		
+		
+		return true; // if you are consuming it
 	};
 
-	//将事件监听器与场景绑定
+	// trigger when moving touch
+	myMouseListener->onTouchMoved = [](Touch* touch, Event* event) {
+		auto target = static_cast<Sprite*>(event->getCurrentTarget());
+		Point movePoint = touch->getLocationInView();
+		auto moveBy = MoveTo::create(100, Vec2(movePoint));
+		target->runAction(moveBy);
+	};
+
+	// trigger when you let up
+	myMouseListener->onTouchEnded = [=](Touch* touch, Event* event) {
+		auto target = static_cast<Sprite*>(event->getCurrentTarget());
+	};
+
+
+	//注册与绑定 监听
 	auto _eventDispatcher = Director::getInstance()->getEventDispatcher();
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(myMouseListener, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(myMouseListener, player);
+
+
 	return true;
 }
 
@@ -102,16 +128,7 @@ void GameScene::background()
 	this->addChild(map, 0);
 }
 
-void GameScene::Player()
-{
-	
-}
 
-void GameScene::move()
-{
-	//player->setPosition(ccp(visibleSize.width / 2, visibleSize.height / 2));
-
-}
 
 void GameScene::menuCloseCallback(Ref* pSender)
 {
