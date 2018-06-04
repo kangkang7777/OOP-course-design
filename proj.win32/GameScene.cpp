@@ -104,9 +104,9 @@ bool GameScene::init()
 		float x0 = touch->getStartLocation().x;
 		float y0 = touch->getStartLocation().y;
 		
-		auto steer = Sprite::create("steer.png");
-		steer->setPosition(Vec2(x0, y0));
-		->addChild(steer, 2);
+		//auto steer = Sprite::create("steer.png");
+		//steer->setPosition(Vec2(x0, y0));
+		//->addChild(steer, 2);
 
 		float x1 = touch->getLocation().x;
 		float y1 = touch->getLocation().y;
