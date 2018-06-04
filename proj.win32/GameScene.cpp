@@ -107,14 +107,24 @@ bool GameScene::init()
 		//auto steer = Sprite::create("steer.png");
 		//steer->setPosition(Vec2(x0, y0));
 		//->addChild(steer, 2);
-
+		//如果在园外 则为一倍速度 在园内 实际速度
 		float x1 = touch->getLocation().x;
 		float y1 = touch->getLocation().y;
+		
 		float unitization = sqrt((x1 - x0)*(x1 - x0) +
-			(y1 - y0)*(y1 - y0));
-		float movePointX = (x1 - x0) / unitization*50;
-		float movePointY = (y1 - y0) / unitization*50;
-		auto moveTo = MoveBy::create(15, Vec2(movePointX, movePointY));
+			                     (y1 - y0)*(y1 - y0));
+		float movePointX, movePointY;
+		if (unitization != 0)
+		{
+			movePointX = (x1 - x0) / unitization * 5;
+			movePointY = (y1 - y0) / unitization * 5;
+		}
+		else
+		{
+			movePointX = 0;
+			movePointY = 0;
+		}
+		auto moveTo = MoveBy::create(5, Vec2(movePointX, movePointY));
 		target->runAction(moveTo);
 	};
 
