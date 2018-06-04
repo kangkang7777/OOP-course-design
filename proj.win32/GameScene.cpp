@@ -1,5 +1,5 @@
 #include "GameScene.h"
-
+#include "math.h"
 auto visibleSize = Director::getInstance()->getVisibleSize();
 Vec2 origin = Director::getInstance()->getVisibleOrigin();
 Scene* GameScene::createScene()
@@ -89,24 +89,38 @@ bool GameScene::init()
 	//		mouse_move_y - mouse_down_y));
 	//	player->runAction(moveBy);
 	//};
-	myMouseListener->onTouchBegan = [](Touch* touch, Event* event) {
+	myMouseListener->onTouchBegan = [](Touch* touch, Event* event)
+	{
 		auto target = static_cast<Sprite*>(event->getCurrentTarget());
-		Point startPoint = touch->getLocationInView();
-		
-		
+		//Point startPoint = touch->getLocation();
 		return true; // if you are consuming it
 	};
-
-	// trigger when moving touch
-	myMouseListener->onTouchMoved = [](Touch* touch, Event* event) {
+	
+	myMouseListener->onTouchMoved = [](Touch* touch, Event* event)
+	{
+		
+		// trigger when moving touch
 		auto target = static_cast<Sprite*>(event->getCurrentTarget());
-		Point movePoint = touch->getLocationInView();
-		auto moveBy = MoveTo::create(100, Vec2(movePoint));
-		target->runAction(moveBy);
+		float x0 = touch->getStartLocation().x;
+		float y0 = touch->getStartLocation().y;
+		
+		auto steer = Sprite::create("steer.png");
+		steer->setPosition(Vec2(x0, y0));
+		->addChild(steer, 2);
+
+		float x1 = touch->getLocation().x;
+		float y1 = touch->getLocation().y;
+		float unitization = sqrt((x1 - x0)*(x1 - x0) +
+			(y1 - y0)*(y1 - y0));
+		float movePointX = (x1 - x0) / unitization*50;
+		float movePointY = (y1 - y0) / unitization*50;
+		auto moveTo = MoveBy::create(15, Vec2(movePointX, movePointY));
+		target->runAction(moveTo);
 	};
 
 	// trigger when you let up
-	myMouseListener->onTouchEnded = [=](Touch* touch, Event* event) {
+	myMouseListener->onTouchEnded = [=](Touch* touch, Event* event)
+	{
 		auto target = static_cast<Sprite*>(event->getCurrentTarget());
 	};
 
