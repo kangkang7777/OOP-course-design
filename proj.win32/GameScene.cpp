@@ -24,39 +24,26 @@ bool GameScene::init()
 		return false;
 	}
 
-
-
 	/////////////////////////////
 	// 2. add a menu item with "X" image, which is clicked to quit the program
 	//    you may modify it.
 
-	// add a "close" icon to exit the progress. it's an autorelease object
-	auto closeItem = MenuItemImage::create(
-		"CloseNormal.png",
-		"CloseSelected.png",
-		CC_CALLBACK_1(GameScene::menuCloseCallback, this));
-
-	if (closeItem == nullptr ||
-		closeItem->getContentSize().width <= 0 ||
-		closeItem->getContentSize().height <= 0)
-	{
-		problemLoading("'CloseNormal.png' and 'CloseSelected.png'");
-	}
-	else
-	{
-		float x = origin.x + visibleSize.width - closeItem->getContentSize().width / 2;
-		float y = origin.y + closeItem->getContentSize().height / 2;
-		closeItem->setPosition(Vec2(x, y));
-	}
-
 	//生成背景
 	GameScene::background();
 
-	//create a player
+	//创建玩家
 	auto player = CCSprite::create("player.png");
+<<<<<<< HEAD
 	player->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+=======
+	player->setPosition(640, 360);
+>>>>>>> e1091a8f27fbbd54c74376b94bc5d39734cd2921
 	this->addChild(player, 1);
+	//视角跟随
+	auto s = Director::getInstance()->getWinSize();
+	this->runAction(Follow::create(player, Rect(0, 0, s.width * 3, s.height*3)));
 
+<<<<<<< HEAD
 	// create menu, it's an autorelease object
 	auto menu = Menu::create(closeItem, NULL);
 	menu->setPosition(Vec2::ZERO);
@@ -86,6 +73,8 @@ void GameScene::background()
 	map->setPosition(0, 0);
 	
 	this->addChild(map, 0);
+=======
+>>>>>>> e1091a8f27fbbd54c74376b94bc5d39734cd2921
 }
 
 
@@ -138,7 +127,7 @@ void GameScene::onTouchEnded(Touch *touch, Event *event)
 void GameScene::menuCloseCallback(Ref* pSender)
 {
 	//返回菜单界面，出栈
-	Director::getInstance()->popScene();
+	Director::getInstance()->pushScene(TransitionFade::create(3.0f,GameScene::createScene()));
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 	exit(0);
 #endif

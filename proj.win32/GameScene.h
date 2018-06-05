@@ -15,7 +15,11 @@ public:
 	void background();
 	// a selector callback
 	void menuCloseCallback(cocos2d::Ref* pSender);
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> e1091a8f27fbbd54c74376b94bc5d39734cd2921
 	bool onTouchBegan(Touch *touch, Event *event);
 	// trigger when moving touch
 	void onTouchMoved(Touch *touch, Event *event);
