@@ -54,7 +54,7 @@ bool GameScene::init()
 
 	//create a player
 	auto player = CCSprite::create("player.png");
-	player->setPosition(ccp(visibleSize.width / 2, visibleSize.height / 2));
+	player->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 	this->addChild(player, 1);
 
 	// create menu, it's an autorelease object
@@ -62,86 +62,21 @@ bool GameScene::init()
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 1);
 
-
-	auto myMouseListener = EventListenerTouchOneByOne::create();//创建事件监听器鼠标事件
-	//lambda expression
-	//鼠标被按下
-
-	//myMouseListener->onTouchBegan = [=](Event *event)
-	//{
-	//	
-	//	EventMouse* e = (EventMouse*)event;
-	//	//mouse_down_x = e->getCursorX();
-	//	//mouse_down_y = visibleSize.height + e->getCursorY();
-
-	//};
-	////鼠标按键移动
-	//myMouseListener->onMouseMove = [=](Event *event)
-	//{
-	//	float mouse_move_x, mouse_move_y,
-	//		mouse_down_x, mouse_down_y;
-	//	EventMouse* e = (EventMouse*)event;
-	//	mouse_move_x = e->getCursorX();
-	//	mouse_move_y = visibleSize.height + e->getCursorY();
-	//	mouse_down_x = getPreviousLocation();
-
-	//	auto moveBy = MoveBy::create(1, Vec2(mouse_move_x - mouse_down_x,
-	//		mouse_move_y - mouse_down_y));
-	//	player->runAction(moveBy);
-	//};
-	myMouseListener->onTouchBegan = [](Touch* touch, Event* event)
-	{
-		auto target = static_cast<Sprite*>(event->getCurrentTarget());
-		//Point startPoint = touch->getLocation();
-		return true; // if you are consuming it
-	};
 	
-	myMouseListener->onTouchMoved = [](Touch* touch, Event* event)
-	{
-		
-		// trigger when moving touch
-		auto target = static_cast<Sprite*>(event->getCurrentTarget());
-		float x0 = touch->getStartLocation().x;
-		float y0 = touch->getStartLocation().y;
-		
-		//auto steer = Sprite::create("steer.png");
-		//steer->setPosition(Vec2(x0, y0));
-		//->addChild(steer, 2);
-		//如果在园外 则为一倍速度 在园内 实际速度
-		float x1 = touch->getLocation().x;
-		float y1 = touch->getLocation().y;
-		
-		float unitization = sqrt((x1 - x0)*(x1 - x0) +
-			                     (y1 - y0)*(y1 - y0));
-		float movePointX, movePointY;
-		if (unitization != 0)
-		{
-			movePointX = (x1 - x0) / unitization * 5;
-			movePointY = (y1 - y0) / unitization * 5;
-		}
-		else
-		{
-			movePointX = 0;
-			movePointY = 0;
-		}
-		auto moveTo = MoveBy::create(5, Vec2(movePointX, movePointY));
-		target->runAction(moveTo);
-	};
+	
+	auto m_listener = EventListenerTouchOneByOne::create();
+	m_listener->onTouchBegan = CC_CALLBACK_2(GameScene::onTouchBegan, this);
+	m_listener->onTouchMoved = CC_CALLBACK_2(GameScene::onTouchMoved, this);
+	m_listener->onTouchEnded = CC_CALLBACK_2(GameScene::onTouchEnded, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(m_listener, this);
 
-	// trigger when you let up
-	myMouseListener->onTouchEnded = [=](Touch* touch, Event* event)
-	{
-		auto target = static_cast<Sprite*>(event->getCurrentTarget());
-	};
-
-
-	//注册与绑定 监听
-	auto _eventDispatcher = Director::getInstance()->getEventDispatcher();
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(myMouseListener, player);
-
-
+	steer = Sprite::create("steer.png");
+	steer->setPosition(Vec2(0, 0));
+	steer->setOpacity(1);
+	this->addChild(steer, 1);
 	return true;
 }
+
 
 
 void GameScene::background()
@@ -149,10 +84,56 @@ void GameScene::background()
 	auto map = Sprite::create("background.jpg");
 	map->setAnchorPoint(Vec2(0.5, 0.5));
 	map->setPosition(0, 0);
+	
 	this->addChild(map, 0);
 }
 
 
+bool GameScene::onTouchBegan(Touch *touch, Event *event)
+{
+	
+	_start_center_Point = touch->getLocationInView();
+	//创建方向盘
+	steer->setOpacity(200);
+	steer->setPosition(Vec2(_start_center_Point));
+	
+	return true;
+}
+// trigger when moving touch
+void GameScene::onTouchMoved(Touch *touch, Event *event)
+{
+	
+	auto target = static_cast<Sprite*>(event->getCurrentTarget());
+	//start point
+	float x0 = _start_center_Point.x;
+	float y0 = _start_center_Point.y;
+	//->addChild(steer, 2);
+	//如果在园外 则为一倍速度 在园内 实际速度
+	float x1 = touch->getLocationInView().x;
+	float y1 = touch->getLocationInView().y;
+
+	float norm = sqrt((x1 - x0)*(x1 - x0) +
+		(y1 - y0)*(y1 - y0));
+	float movePointX, movePointY;
+	if (norm != 0)
+	{
+		movePointX = (x1 - x0) / norm * 5;
+		movePointY = (y1 - y0) / norm * 5;
+	}
+	else
+	{
+		movePointX = 0;
+		movePointY = 0;
+	}
+	auto moveTo = MoveBy::create(5, Vec2(movePointX, movePointY));
+	target->runAction(moveTo);
+	
+}
+void GameScene::onTouchEnded(Touch *touch, Event *event)
+{
+	//hide the steer
+	steer->setOpacity(1);
+}
 
 void GameScene::menuCloseCallback(Ref* pSender)
 {
