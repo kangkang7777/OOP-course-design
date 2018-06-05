@@ -129,7 +129,8 @@ void MenuScene::gameStartCallback(Ref *pSender, cocos2d::ui::Widget::TouchEventT
 	//场景跳转至正式游戏界面,进栈
      if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
 	{
-		Director::getInstance()->pushScene(GameScene::createScene());
+		//Director::getInstance()->pushScene(GameScene::createScene())
+			Director::getInstance()->pushScene(TransitionFade::create(3.0f, GameScene::createScene()));
 	}
 	
 //	Director::getInstance()->runWithScene(GameScene::createScene());

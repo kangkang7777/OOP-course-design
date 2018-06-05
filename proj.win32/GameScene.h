@@ -15,20 +15,15 @@ public:
 	void background();
 	// a selector callback
 	void menuCloseCallback(cocos2d::Ref* pSender);
-	//add the player
-	//void Player();
-	//add mouse listener
-	
-	// implement the "static create()" method manually
-	void updatePoint(float dt);
 
-	bool onTouchBegan(Touch* touch, Event* event);
-
-	void onTouchMoved(Touch* touch, Event* event);
+	bool onTouchBegan(Touch *touch, Event *event);
+	// trigger when moving touch
+	void onTouchMoved(Touch *touch, Event *event);
+	void onTouchEnded(Touch *touch, Event *event);
 	CREATE_FUNC(GameScene);
 
 private:
-	Vec2 startPoint;
-	//Sprite* player;
-	
+	Point _start_center_Point;
+	Point _movePoint;
+	Sprite* steer;
 };
