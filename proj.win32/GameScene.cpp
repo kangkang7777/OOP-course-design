@@ -1,7 +1,5 @@
 #include "GameScene.h"
-#include "math.h"
-auto visibleSize = Director::getInstance()->getVisibleSize();
-Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
 Scene* GameScene::createScene()
 {
 	return GameScene::create();
@@ -14,70 +12,61 @@ static void problemLoading(const char* filename)
 	printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
-// on "init" you need to initialize your instance
 bool GameScene::init()
 {
-	//////////////////////////////
-	// 1. super init first
+	// 若init失败
 	if (!Scene::init())
 	{
 		return false;
 	}
 
-	/////////////////////////////
-	// 2. add a menu item with "X" image, which is clicked to quit the program
-	//    you may modify it.
-
 	//生成背景
-	GameScene::background();
+	auto map = Sprite::create("background.jpg");
+	map->setAnchorPoint(Vec2(0, 0));
+	map->setPosition(0, 0);
+	this->addChild(map, 0);
 
-	//创建玩家
-	auto player = CCSprite::create("player.png");
-<<<<<<< HEAD
-	player->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
-=======
-	player->setPosition(640, 360);
->>>>>>> e1091a8f27fbbd54c74376b94bc5d39734cd2921
+	//生成玩家
+	player = CCSprite::create("player.png");
+	player->setPosition(1920, 1080);
 	this->addChild(player, 1);
+
 	//视角跟随
 	auto s = Director::getInstance()->getWinSize();
 	this->runAction(Follow::create(player, Rect(0, 0, s.width * 3, s.height*3)));
 
-<<<<<<< HEAD
-	// create menu, it's an autorelease object
-	auto menu = Menu::create(closeItem, NULL);
-	menu->setPosition(Vec2::ZERO);
-	this->addChild(menu, 1);
-
-	
-	
+	//鼠标监听&操控
 	auto m_listener = EventListenerTouchOneByOne::create();
 	m_listener->onTouchBegan = CC_CALLBACK_2(GameScene::onTouchBegan, this);
 	m_listener->onTouchMoved = CC_CALLBACK_2(GameScene::onTouchMoved, this);
 	m_listener->onTouchEnded = CC_CALLBACK_2(GameScene::onTouchEnded, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(m_listener, this);
-
 	steer = Sprite::create("steer.png");
 	steer->setPosition(Vec2(0, 0));
 	steer->setOpacity(1);
 	this->addChild(steer, 1);
+
+	//键盘监听&注册
+	auto k_listener = EventListenerKeyboard::create();
+	k_listener->onKeyPressed = CC_CALLBACK_2(GameScene::onKeyPressed, this);
+	k_listener->onKeyReleased = CC_CALLBACK_2(GameScene::onKeyReleased, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(k_listener, this);
+
+	//时间表
+	this->scheduleUpdate();
+	this->schedule(schedule_selector(GameScene::borderControl), 0.1f);
+
 	return true;
 }
 
-
-
-void GameScene::background()
+//
+void GameScene::update(float delta)
 {
-	auto map = Sprite::create("background.jpg");
-	map->setAnchorPoint(Vec2(0.5, 0.5));
-	map->setPosition(0, 0);
-	
-	this->addChild(map, 0);
-=======
->>>>>>> e1091a8f27fbbd54c74376b94bc5d39734cd2921
+	Node::update(delta);
+	keyPressedDuration();
 }
 
-
+// trigger when moving touch
 bool GameScene::onTouchBegan(Touch *touch, Event *event)
 {
 	
@@ -88,7 +77,6 @@ bool GameScene::onTouchBegan(Touch *touch, Event *event)
 	
 	return true;
 }
-// trigger when moving touch
 void GameScene::onTouchMoved(Touch *touch, Event *event)
 {
 	
@@ -124,6 +112,55 @@ void GameScene::onTouchEnded(Touch *touch, Event *event)
 	steer->setOpacity(1);
 }
 
+//键盘操作
+void GameScene::onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event *event)
+{
+	keys[keycode] = true;
+}
+void GameScene::onKeyReleased(EventKeyboard::KeyCode keycode, cocos2d::Event *event)
+{
+	keys[keycode] = false;
+}
+bool GameScene::isKeyPressed(EventKeyboard::KeyCode keyCode)
+{
+	return keys[keyCode];
+}
+void GameScene::keyPressedDuration()
+{
+	const int moveDistance = 5;
+	var_x = 0, var_y = 0;
+	auto leftArrow = EventKeyboard::KeyCode::KEY_LEFT_ARROW;
+	auto rightArrow = EventKeyboard::KeyCode::KEY_RIGHT_ARROW;
+	auto upArrow = EventKeyboard::KeyCode::KEY_UP_ARROW;
+	auto downArrow = EventKeyboard::KeyCode::KEY_DOWN_ARROW;
+	if (keys[leftArrow])
+		var_x = -moveDistance;
+	else if (keys[rightArrow])
+		var_x = moveDistance;
+    if (keys[upArrow])
+		var_y = moveDistance;
+	else if (keys[downArrow])
+		var_y = -moveDistance;
+	auto moveTo = MoveBy::create(0.5, Vec2(var_x, var_y));
+	player->runAction(moveTo);
+}
+
+void GameScene::borderControl(float fDelta)
+{
+	int control_x = 0, control_y = 0;
+	if (player->getPosition().x < 0)
+		control_x += 3839;
+	else if(player->getPosition().x > 3840)
+		control_x -= 3839;
+	if (player->getPosition().y < 0)
+		control_y += 2159;
+	else if (player->getPosition().y > 2160)
+		control_y -= 2159;
+	auto move_control = MoveBy::create(1.0/60, Vec2(control_x, control_y));
+	player->runAction(move_control);
+}
+
+//
 void GameScene::menuCloseCallback(Ref* pSender)
 {
 	//返回菜单界面，出栈
