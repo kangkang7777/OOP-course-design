@@ -10,6 +10,9 @@
     <Filter Include="src">
       <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\General">
+      <UniqueIdentifier>{2358967b-3815-475a-89dd-46537ad41dfd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -24,6 +27,15 @@
     <ClCompile Include="GameScene.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="Function.cpp">
+      <Filter>src\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Class.cpp">
+      <Filter>src\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>src\General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -37,6 +49,18 @@
     </ClInclude>
     <ClInclude Include="GameScene.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="Function.h">
+      <Filter>src\General</Filter>
+    </ClInclude>
+    <ClInclude Include="macro.h">
+      <Filter>src\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Class.h">
+      <Filter>src\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>src\General</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

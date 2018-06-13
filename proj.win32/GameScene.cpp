@@ -27,24 +27,18 @@ bool GameScene::init()
 	this->addChild(map, 0);
 
 	//生成玩家
-	player = CCSprite::create("player.png");
+	player=Sprite::create("player.png");
 	player->setPosition(1920, 1080);
 	this->addChild(player, 1);
+
+	//食物初始化
+	foodGenerate();
+
+	//生成流星锤
 
 	//视角跟随
 	auto s = Director::getInstance()->getWinSize();
 	this->runAction(Follow::create(player, Rect(0, 0, s.width * 3, s.height*3)));
-
-	//鼠标监听&操控
-	auto m_listener = EventListenerTouchOneByOne::create();
-	m_listener->onTouchBegan = CC_CALLBACK_2(GameScene::onTouchBegan, this);
-	m_listener->onTouchMoved = CC_CALLBACK_2(GameScene::onTouchMoved, this);
-	m_listener->onTouchEnded = CC_CALLBACK_2(GameScene::onTouchEnded, this);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(m_listener, this);
-	steer = Sprite::create("steer.png");
-	steer->setPosition(Vec2(0, 0));
-	steer->setOpacity(1);
-	this->addChild(steer, 1);
 
 	//键盘监听&注册
 	auto k_listener = EventListenerKeyboard::create();
@@ -64,52 +58,6 @@ void GameScene::update(float delta)
 {
 	Node::update(delta);
 	keyPressedDuration();
-}
-
-// trigger when moving touch
-bool GameScene::onTouchBegan(Touch *touch, Event *event)
-{
-	
-	_start_center_Point = touch->getLocationInView();
-	//创建方向盘
-	steer->setOpacity(200);
-	steer->setPosition(Vec2(_start_center_Point));
-	
-	return true;
-}
-void GameScene::onTouchMoved(Touch *touch, Event *event)
-{
-	
-	auto target = static_cast<Sprite*>(event->getCurrentTarget());
-	//start point
-	float x0 = _start_center_Point.x;
-	float y0 = _start_center_Point.y;
-	//->addChild(steer, 2);
-	//如果在园外 则为一倍速度 在园内 实际速度
-	float x1 = touch->getLocationInView().x;
-	float y1 = touch->getLocationInView().y;
-
-	float norm = sqrt((x1 - x0)*(x1 - x0) +
-		(y1 - y0)*(y1 - y0));
-	float movePointX, movePointY;
-	if (norm != 0)
-	{
-		movePointX = (x1 - x0) / norm * 5;
-		movePointY = (y1 - y0) / norm * 5;
-	}
-	else
-	{
-		movePointX = 0;
-		movePointY = 0;
-	}
-	auto moveTo = MoveBy::create(5, Vec2(movePointX, movePointY));
-	target->runAction(moveTo);
-	
-}
-void GameScene::onTouchEnded(Touch *touch, Event *event)
-{
-	//hide the steer
-	steer->setOpacity(1);
 }
 
 //键盘操作
@@ -145,6 +93,7 @@ void GameScene::keyPressedDuration()
 	player->runAction(moveTo);
 }
 
+//边界控制
 void GameScene::borderControl(float fDelta)
 {
 	int control_x = 0, control_y = 0;
@@ -160,6 +109,25 @@ void GameScene::borderControl(float fDelta)
 	player->runAction(move_control);
 }
 
+//食物
+void GameScene::foodGenerate()
+{
+	int count = 0;
+	for(int _x=10;_x<3840;_x+=100)
+	    for (int _y = 10; _y<2160; _y += 100)
+	    {
+			//foods[count] = Sprite::create("bean_polygon3_2.png");
+			//foods[count]->setScale(0.3, 0.3);
+			//foods[count] ->setPosition(_x + Random(-100, 100), _y + Random(-100, 100));
+		    int type = Random(3,6);
+			int color = Random(1, 6);
+			std::string path = StringUtils::format("bean_polygon%d_%d.png", type, color);
+			foods[count] = Sprite::create(path.c_str());
+			foods[count]->setScale(0.3, 0.3);
+			foods[count] ->setPosition(_x + Random(-100, 100), _y + Random(-100, 100));
+			this->addChild(foods[count++], 0);
+	    }
+}
 //
 void GameScene::menuCloseCallback(Ref* pSender)
 {
