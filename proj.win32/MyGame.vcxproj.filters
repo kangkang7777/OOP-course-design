@@ -30,11 +30,26 @@
     <ClCompile Include="Function.cpp">
       <Filter>src\General</Filter>
     </ClCompile>
-    <ClCompile Include="Class.cpp">
-      <Filter>src\General</Filter>
-    </ClCompile>
     <ClCompile Include="Entity.cpp">
       <Filter>src\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>src\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Division.cpp">
+      <Filter>src\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Foods.cpp">
+      <Filter>src\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Prick.cpp">
+      <Filter>src\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Spore.cpp">
+      <Filter>src\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamelayer.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -56,11 +71,26 @@
     <ClInclude Include="macro.h">
       <Filter>src\General</Filter>
     </ClInclude>
-    <ClInclude Include="Class.h">
-      <Filter>src\General</Filter>
-    </ClInclude>
     <ClInclude Include="Entity.h">
       <Filter>src\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>src\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Division.h">
+      <Filter>src\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Foods.h">
+      <Filter>src\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Prick.h">
+      <Filter>src\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Spore.h">
+      <Filter>src\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Gamelayer.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

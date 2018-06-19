@@ -1,8 +1,11 @@
+#ifndef _GameScene_H_
+#define _GameScene_H_
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 #include "SimpleAudioEngine.h"
 #include "cocos-ext.h"
 #include "Function.h"
+#include "Player.h"
 USING_NS_CC;
 USING_NS_CC_EXT;
 using namespace ui;
@@ -28,10 +31,12 @@ public:
 	CREATE_FUNC(GameScene);
 private:
 	
-	Sprite *player ;
+	
+	Sprite *player;
 	//用以储存按下的键
 	std::map<cocos2d::EventKeyboard::KeyCode, bool> keys;
 	int var_x, var_y;
 	//食物
 	std::map<int, Sprite *> foods;
 };
+#endif

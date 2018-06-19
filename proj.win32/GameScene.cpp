@@ -27,6 +27,10 @@ bool GameScene::init()
 	this->addChild(map, 0);
 
 	//Éú³ÉÍæ¼Ò
+	Player *player1 = Player::create(Vec2(1920,1080),"player.png");
+	//player1->setPosition(1920, 1080);
+	//this->addChild(player1, 1);
+
 	player=Sprite::create("player.png");
 	player->setPosition(1920, 1080);
 	this->addChild(player, 1);
