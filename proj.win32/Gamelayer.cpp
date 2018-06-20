@@ -83,7 +83,12 @@ bool GameLayer::init()
 	//this->schedule(schedule_selector(GameLayer::synSporeInfo), 0.1);
 	//this->scheduleOnce(schedule_selector(GameLayer::startAddPrick), 3);
 
-	
+	auto m_listener = EventListenerTouchOneByOne::create();
+	m_listener->onTouchBegan = CC_CALLBACK_2(GameLayer::onTouchBegan, this);
+	m_listener->onTouchMoved = CC_CALLBACK_2(GameLayer::onTouchMoved, this);
+	m_listener->onTouchEnded = CC_CALLBACK_2(GameLayer::onTouchEnded, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(m_listener, this);
+
 	//键盘监听&注册
 	auto k_listener = EventListenerKeyboard::create();
 	k_listener->onKeyPressed = CC_CALLBACK_2(Gamelayer::onKeyPressed, this);
@@ -91,8 +96,9 @@ bool GameLayer::init()
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(k_listener, this);
 
 	//视角跟随主角
-	auto s = Director::getInstance()->getWinSize();
-	this->runAction(Follow::create(player, Rect(0, 0, s.width * 3, s.height * 3)));
+	//不应该这样
+	/*auto s = Director::getInstance()->getWinSize();
+	this->runAction(Follow::create(player, Rect(0, 0, s.width * 3, s.height * 3)));*/
 
 	return true;
 }
@@ -106,10 +112,40 @@ void GameLayer::update(float dt)
 	//updateRival();        //每个玩家信息由玩家客户端自己更新
 	updateView();
 	collide();
-	updateplayermove(_player)；
+	updateplayermove_key(_player);
+	updateplayermove_touch(_player);
 	//synPlayerInfo();
 	//synPlayerMove();
 	//synSporeInfo();
+}
+
+bool GameLayer::onTouchBegan(Touch *touch, Event *event)
+{
+
+	
+	//创建方向盘
+	steer->setOpacity(200);
+	steer->setPosition(touch->getStartLocation());
+
+	return true;
+}
+// trigger when moving touch
+void GameLayer::onTouchMoved(Touch *touch, Event *event)
+{
+
+	//auto target = static_cast<Sprite*>(event->getCurrentTarget());
+	//start point
+
+	//->addChild(steer, 2);
+	//如果在园外 则为一倍速度 在园内 实际速度
+	vect = (touch->getLocation() - touch->getPreviousLocation()).getNormalized();
+	
+	
+}
+void GameLayer::onTouchEnded(Touch *touch, Event *event)
+{
+	//hide the steer
+	steer->setOpacity(0);
 }
 
 //键盘操作
@@ -256,7 +292,7 @@ void GameLayer::initSpore(rapidjson::Value &value)
 */
 
 //player移动
-void GameLayer::updateplayermove(Player * player)
+void GameLayer::updateplayermove_key(Player * player)
 {
 	int var_x = 0, var_y = 0;
 	const int moveDistance = 5;
@@ -274,8 +310,14 @@ void GameLayer::updateplayermove(Player * player)
 		var_y = -moveDistance;
 	Vec2 vec(var_x, var_y);
 	player->setVec(vec);
-	auto moveTo = MoveBy::create(PLAYER_INITIAL_VECTOR, player->getVec());
-	player->runAction(moveTo);
+	auto moveBy = MoveBy::create(PLAYER_INITIAL_VECTOR, player->getVec());
+	player->runAction(moveBy);
+}
+
+void GameLayer::updateplayermove_touch(Player * player)
+{
+	auto moveBy = MoveBy::create(0.5, vect);
+	player->runAction(moveBy);
 }
 
 void GameLayer::updateView()
