@@ -2,12 +2,10 @@
 #define _GameScene_H_
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
-#include "SimpleAudioEngine.h"
-#include "cocos-ext.h"
 #include "Function.h"
-#include "Player.h"
+#include "Gamelayer.h"
 USING_NS_CC;
-USING_NS_CC_EXT;
+
 using namespace ui;
 
 class GameScene : public cocos2d::Scene
@@ -18,7 +16,7 @@ public:
 	virtual bool init();
 	// a selector callback
 	void menuCloseCallback(cocos2d::Ref* pSender);
-	//
+	/*
 	void onKeyPressed(EventKeyboard::KeyCode KEY_LEFT_ARROW, cocos2d::Event *event);
 	void onKeyReleased(EventKeyboard::KeyCode keycode, cocos2d::Event *event);
 	bool isKeyPressed(EventKeyboard::KeyCode keyCode);
@@ -38,5 +36,6 @@ private:
 	int var_x, var_y;
 	//Ê³Îï
 	std::map<int, Sprite *> foods;
+	*/
 };
 #endif

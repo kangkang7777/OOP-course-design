@@ -1,8 +1,23 @@
 #include "GameScene.h"
 
+enum GameZOrder
+{
+	GAME_BACKGROUND_Z,
+	GAME_LAYER_Z,
+	GAME_DATA_Z,
+	GAME_MENU_Z,
+	GAME_SETTING_LAYER_Z
+};
+
 Scene* GameScene::createScene()
 {
-	return GameScene::create();
+	auto scene = Scene::create();
+
+	auto layer = GameScene::create();
+
+	scene->addChild(layer);
+
+	return scene;
 }
 
 // Print useful error message instead of segfaulting when files are not there.
@@ -14,7 +29,7 @@ static void problemLoading(const char* filename)
 
 bool GameScene::init()
 {
-	// 若init失败
+
 	if (!Scene::init())
 	{
 		return false;
@@ -25,7 +40,7 @@ bool GameScene::init()
 	map->setAnchorPoint(Vec2(0, 0));
 	map->setPosition(0, 0);
 	this->addChild(map, 0);
-
+	/*
 	//生成玩家
 	Player *player1 = Player::create(Vec2(1920,1080),"player.png");
 	//player1->setPosition(1920, 1080);
@@ -41,8 +56,7 @@ bool GameScene::init()
 	//生成流星锤
 
 	//视角跟随
-	auto s = Director::getInstance()->getWinSize();
-	this->runAction(Follow::create(player, Rect(0, 0, s.width * 3, s.height*3)));
+	
 
 	//键盘监听&注册
 	auto k_listener = EventListenerKeyboard::create();
@@ -53,11 +67,13 @@ bool GameScene::init()
 	//时间表
 	this->scheduleUpdate();
 	this->schedule(schedule_selector(GameScene::borderControl), 0.1f);
-
+	*/
+	auto gameLayer = GameLayer::create();
+	this->addChild(gameLayer, GAME_LAYER_Z);
 	return true;
 }
 
-//
+/*
 void GameScene::update(float delta)
 {
 	Node::update(delta);
@@ -132,7 +148,7 @@ void GameScene::foodGenerate()
 			this->addChild(foods[count++], 0);
 	    }
 }
-//
+*/
 void GameScene::menuCloseCallback(Ref* pSender)
 {
 	//返回菜单界面，出栈

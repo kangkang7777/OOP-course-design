@@ -75,7 +75,7 @@ bool Player::init(std::string & name, int vestmentID, int keywordID, Vec2 veloci
 	_map = map;
 	_vestmentID = vestmentID;
 	_keywordID = keywordID;
-	_velocity = velocity;
+	_vector = velocity;
 	_state = State::NORMAL;
 	_combineEnable = true;
 
@@ -96,7 +96,7 @@ Division * Player::createDivision(Vec2 position, Vec2 velocity, int score)
 	return division;
 }
 
-void Player::setVelocity(Vec2 v)
+void Player::setVec(Vec2 v)
 {
 	_state = State::NORMAL;
 
@@ -107,12 +107,12 @@ void Player::setVelocity(Vec2 v)
 			division->setVelocity(v);
 		}
 	}
-	_velocity = v;
+	_vector = v;
 }
 
-Vec2 Player::getVelocity()
+Vec2 Player::getVec()
 {
-	return _velocity;
+	return _vector;
 }
 
 void  Player::dividePlayer()
@@ -141,10 +141,10 @@ void  Player::dividePlayer()
 			float radius = division->getRadius();
 			int score = division->getScore();
 			Vec2 position = division->getPosition();
-			auto newDivision = this->createDivision(position, _velocity, score);
+			auto newDivision = this->createDivision(position, _vector, score);
 			_map->addChild(newDivision);
 
-			float angle = _velocity.getAngle();
+			float angle = _vector.getAngle();
 			float divideDistance = radius + PLAYER_MIN_DIVIDE_DISTANCE;
 			Vec2 newPosition = Vec2(divideDistance*cosf(angle), divideDistance*sinf(angle));
 
@@ -234,7 +234,7 @@ void Player::updateDivision()
 			{
 				speed = PLAYER_CONCENTRATE_SPEED;
 			}
-			Vec2 velocity = division->getVelocity();
+			Vec2 velocity = division->getVec();
 			float dx = velocity.x*speed;
 			float dy = velocity.y*speed;
 			Vec2 divisionVec = Vec2(dx, dy); //分身移动方向
@@ -402,7 +402,7 @@ void Player::spitSpore(Node * map, Map<int, Spore *> & sporeMap, int globalID)
 			{
 				division->spitSpore();
 				Vec2 position = division->getPosition();
-				float angle = division->getVelocity().getAngle();
+				float angle = division->getVec().getAngle();
 				float radius = division->getRadius();
 				Spore * spore = Spore::create("public/spore_1.png");
 				Vec2 sporePosition = Vec2(position.x + radius * cosf(angle) * 2, position.y + radius * sinf(angle) * 2);
@@ -618,7 +618,7 @@ void Player::resetPlayer()
 	auto division = this->createDivision(position, Vec2::ZERO, PLAYER_INITIAL_SCORE);
 	_map->addChild(division, PLAYER_INITIAL_SCORE);
 
-	_velocity = Vec2::ZERO;
+	_vector = Vec2::ZERO;
 }
 
 int Player::getTotalScore()

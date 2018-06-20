@@ -177,12 +177,12 @@ float Division::getWeight()
 
 void Division::setVelocity(Vec2 v)
 {
-	_velocity = v;
+	_vector = v;
 }
 
-Vec2 Division::getVelocity()
+Vec2 Division::getVec()
 {
-	return _velocity;
+	return _vector;
 }
 
 bool Division::collidePrick(Prick * prick)

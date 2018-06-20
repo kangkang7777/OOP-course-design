@@ -10,6 +10,7 @@
 #define DESIGN_SCREEN_HEIGHT 720			//设计屏幕分辨率，高度
 
 #define MAX_BEAN_NUM 4800			//地图中最大豆子数量
+#define INIT_PRICK_NUM 15           //初始刺球数量
 
 #define MAP_DIVISION_X 6			//地图横向划分，6个屏幕宽大小
 #define MAP_DIVISIOIN_Y 8			//地图纵向划分，8个屏幕高大小
@@ -23,6 +24,7 @@
 #define PLAYER_INITIAL_RADIUS 50
 #define PLAYER_INITIAL_SCORE 200
 #define PLAYER_INITIAL_SPEED 6			//玩家初始速度
+#define PLAYER_INITIAL_VECTOR 0.5	        //玩家位移最小量
 #define PLAYER_MIN_SPEED 1			//玩家最小速度
 #define PLAYER_MAX_DIVISION_NUM 16			//玩家最大分身数量
 #define PLAYER_MIN_EAT_SPORE_SCORE 18			//玩家最低吃孢子需要的分值

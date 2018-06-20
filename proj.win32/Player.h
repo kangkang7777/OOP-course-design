@@ -15,14 +15,6 @@ class Player :public Node
 public:
 	Player();
 	~Player();
-	void setVector(float x, float y)
-	{
-		var_x = x;
-		var_y = y;
-	}
-	float var_x, var_y;//player要移动的向量
-	float speed = 1;
-
 	enum class State
 	{
 		NORMAL, //正常状态
@@ -30,7 +22,6 @@ public:
 		SPIT,  //吐球状态
 		CONCENTRATE  //主动中合状态
 	};
-
 
 	static Player * create(Vec2  position, Node * map);
 	bool init(Vec2  position, Node * map);
@@ -48,7 +39,7 @@ public:
 
 	bool collideFoods(Foods * food);		//与食物的碰撞检测
 	bool collideSpore(Spore * spore);		//与孢子的碰撞检测
-	bool collidePrick(Prick *prick);		//与绿刺的碰撞检测
+	bool collidePrick(Prick *prick);		//与刺球的碰撞检测
 	bool collideRival(Player *rival);		//与对手的碰撞检测
 	int collideDivision(Division * division);		//与对手分身的碰撞
 
@@ -60,8 +51,8 @@ public:
 	void setConcentrate();		//设置中合状态
 	void collidePrickFinish();	//碰到刺回调
 
-	void setVelocity(Vec2 v);	//设置速度
-	Vec2 getVelocity();			//获取速度
+	void setVec(Vec2 v);	//设置速度
+	Vec2 getVec();			//获取速度
 
 	Rect getPlayerRect();		//获取玩家包围盒
 	void setCombine(float dt);
@@ -71,18 +62,17 @@ public:
 	int getTotalScore();
 	Vector<Division *> & getDivisionList();
 
-
 	void clearDivisionList();
 private:
 	Vector<Division *> _divisionList;		//玩家分身列表
 	int _divisionNum;							//分身数量
 
-	Node * _map;			//地图指针
+	Node * _map;			//layer指针
 	std::string _playerName;		//玩家名
 	int _vestmentID;		//圣衣id
 	int _keywordID;			//关键字id
 
-	Vec2 _velocity;			//速度
+	Vec2 _vector;			//位移
 	int _color;			//颜色,没有关键字时可用
 
 	State _state;		//玩家状态

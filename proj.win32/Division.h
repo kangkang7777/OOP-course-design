@@ -41,7 +41,7 @@ public:
 	void setWeight(float weight);
 	float getWeight();
 	void setVelocity(Vec2 v);
-	Vec2 getVelocity();
+	Vec2 getVec();
 
 	void setPrePosition(const Vec2 & position);
 	Vec2 getPrePosition();
@@ -53,7 +53,7 @@ private:
 
 	float _speed;
 	float _weight;
-	Vec2 _velocity;
+	Vec2 _vector;
 
 	bool _showVestment;
 
