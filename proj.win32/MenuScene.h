@@ -1,3 +1,6 @@
+#ifndef _MenuScene_H_
+#define _MenuScene_H_
+
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 #include "SimpleAudioEngine.h"
@@ -7,6 +10,7 @@
 USING_NS_CC;
 USING_NS_CC_EXT;
 using namespace ui;
+
 class MenuScene : public cocos2d::Scene
 {
 public:
@@ -21,3 +25,5 @@ public:
 	// implement the "static create()" method manually
 	CREATE_FUNC(MenuScene);
 };
+
+#endif

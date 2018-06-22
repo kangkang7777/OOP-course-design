@@ -1,10 +1,8 @@
 #ifndef _GameLayer_H_
 #define _GameLayer_H_
-
 #include "cocos2d.h"
 #include "macro.h"
 #include "ui\CocosGUI.h"
-#include "GameLayer.h"
 #include "SimpleAudioEngine.h"
 #include "cocos-ext.h"
 #include "Function.h"
@@ -15,6 +13,7 @@
 #include "Prick.h"
 #include "Division.h"
 #include "GameScene.h"
+
 USING_NS_CC_EXT;
 USING_NS_CC;
 
@@ -70,7 +69,7 @@ public:
 	void addPrick(float dt);
 
 	void collideFoods(Player * player);		//与食物的碰撞检测
-	void collide();			//碰撞检测
+	void collideRival();			       //与敌人的碰撞检测
 
 	void resetFoods(Node * node);		//重置食物
 	void resetPlayer();
@@ -93,9 +92,8 @@ public:
 	void playerConcentrateEvent(EventCustom * event);
 	void updatePlayerEvent(EventCustom * event);
 	*/
-	void sendTimeChange(float dt);
+	//void sendTimeChange(float dt);
 private:
-
 	//用以储存按下的键
 	std::map<cocos2d::EventKeyboard::KeyCode, bool> keys;
 	Node * _map;				//地图
@@ -106,9 +104,9 @@ private:
 	Map<int, Spore *> _sporeMap;			//孢子
 	std::vector<int> _vecSporeNeedUpdate;			//需要更新的孢子
 	float _mapScale;			//地图缩放因子
-	float _timeCount;
-	int _mode;			//游戏模式
-	int _roomID;		//房间id
+	//float _timeCount;
+	//int _mode;			//游戏模式
+	//int _roomID;		//房间id
 };
 
 #endif

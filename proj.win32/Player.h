@@ -1,5 +1,5 @@
-#ifndef  _Class_
-#define  _Class_
+#ifndef  _Player_
+#define  _Player_
 
 #include "cocos2d.h"
 

@@ -13,7 +13,7 @@ enum GameLayerZOrder
 
 GameLayer::GameLayer()
 {
-	_roomID = -1;
+	
 }
 
 GameLayer::~GameLayer()
@@ -22,6 +22,7 @@ GameLayer::~GameLayer()
 	_food.clear();
 	_sporeMap.clear();
 	_prickMap.clear();
+	/*
 	_eventDispatcher->removeCustomEventListeners("Divide");
 	_eventDispatcher->removeCustomEventListeners("Spit");
 	_eventDispatcher->removeCustomEventListeners("PlayerMove");
@@ -31,6 +32,7 @@ GameLayer::~GameLayer()
 	_eventDispatcher->removeCustomEventListeners("EnterPlayer");
 	_eventDispatcher->removeCustomEventListeners("PlayerConcentrate");
 	_eventDispatcher->removeCustomEventListeners("UpdatePlayer");
+	*/
 }
 
 bool GameLayer::init()
@@ -47,7 +49,7 @@ bool GameLayer::init()
 	_map->setContentSize(Size(MAP_WIDTH, MAP_HEIGHT));
 	this->addChild(_map, GAME_LAYER_MAP_Z);
 
-	initData();
+	//initData();
 	initDataDefault();
 	/*
 	_joystick = Joystick::create("gameScene/base.png", "gameScene/joystick.png");
@@ -76,23 +78,20 @@ bool GameLayer::init()
 	*/
 
 	this->scheduleUpdate();
-	this->schedule(schedule_selector(GameLayer::updateScore), 1);
-	this->schedule(schedule_selector(GameLayer::updateRank), 2);
+	//this->schedule(schedule_selector(GameLayer::updateScore), 1);
+	//this->schedule(schedule_selector(GameLayer::updateRank), 2);
 	//this->schedule(schedule_selector(GameLayer::synPlayerInfo), 0.2);
 	//this->schedule(schedule_selector(GameLayer::synPlayerMove), 0.1);
 	//this->schedule(schedule_selector(GameLayer::synSporeInfo), 0.1);
-	//this->scheduleOnce(schedule_selector(GameLayer::startAddPrick), 3);
+	this->scheduleOnce(schedule_selector(GameLayer::startAddPrick), 3);
 
 	
 	//键盘监听&注册
 	auto k_listener = EventListenerKeyboard::create();
-	k_listener->onKeyPressed = CC_CALLBACK_2(Gamelayer::onKeyPressed, this);
-	k_listener->onKeyReleased = CC_CALLBACK_2(Gamelayer::onKeyReleased, this);
+	k_listener->onKeyPressed = CC_CALLBACK_2(GameLayer::onKeyPressed, this);
+	k_listener->onKeyReleased = CC_CALLBACK_2(GameLayer::onKeyReleased, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(k_listener, this);
 
-	//视角跟随主角
-	auto s = Director::getInstance()->getWinSize();
-	this->runAction(Follow::create(player, Rect(0, 0, s.width * 3, s.height * 3)));
 
 	return true;
 }
@@ -105,8 +104,8 @@ void GameLayer::update(float dt)
 	_player->updateDivision();
 	//updateRival();        //每个玩家信息由玩家客户端自己更新
 	updateView();
-	collide();
-	updateplayermove(_player)；
+	collideRival();
+	//updateplayermove(_player);
 	//synPlayerInfo();
 	//synPlayerMove();
 	//synSporeInfo();
@@ -168,6 +167,10 @@ void GameLayer::initPlayer()
 	_player = Player::create(Vec2(xPosition, yPosition), _map);
 	_player->setLocalZOrder(_player->getTotalScore());
 	_map->addChild(_player);
+	//视角跟随主角
+	auto s = Director::getInstance()->getWinSize();
+	_map->runAction(Follow::create(_player, Rect(0, 0, s.width * 3, s.height * 3)));
+
 }
 
 //敌人初始化(AI)
@@ -194,8 +197,10 @@ void GameLayer::initFoods()
 		{
 			    int type = Random(1, 4);
 			    int color = Random(1, 6);
-				std::string path = StringUtils::format("gameScene/food%d_%d.png", type, color);
-				auto food = Foods::create(path.c_str());
+				//std::string path = StringUtils::format("gameScene/food%d_%d.png", type, color);
+				//auto food = Foods::create(path.c_str());
+				auto food = Foods::create("food1_1.png");
+
 				food->setPosition(Vec2(_x + Random(-100, 100), _y + Random(-100, 100)));
 				food->setLocalZOrder(food->getScore());
 				_map->addChild(food);
@@ -237,7 +242,7 @@ void GameLayer::addPrick(float dt)
 }
 
 /*
-void GameLayer::initSpore(rapidjson::Value &value)
+void GameLayer::initSpore()
 {
 	int size = value.Size();
 	for (int i = 0; i < size; i++)
@@ -540,7 +545,7 @@ void GameLayer::updateScore(float dt)
 }
 
 //检测玩家与敌人的碰撞
-void GameLayer::collide()
+void GameLayer::collideRival()
 {
 	for (auto item : _rival)        
 	{
@@ -699,6 +704,7 @@ void GameLayer::initDataDefault()
 	initRival();
 	initPlayer();
 	initFoods();
+	initPrick();
 }
 /*
 void GameLayer::playerMoveEvent(EventCustom * event)
@@ -1022,8 +1028,10 @@ void GameLayer::updatePlayerEvent(EventCustom * event)
 	}
 }
 */
+/*
 void GameLayer::sendTimeChange(float dt)
 {
 	_timeCount -= dt;
 	//Director::getInstance()->getEventDispatcher()->dispatchCustomEvent("StartCountTime", &_timeCount);
 }
+*/

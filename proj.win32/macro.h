@@ -21,8 +21,8 @@
 
 #define PLAYER_INITIAL_RADIUS 19			//玩家初始半径，单位像素
 #define PLAYER_INITIAL_SCORE 10			//玩家初始分值
-#define PLAYER_INITIAL_RADIUS 50
-#define PLAYER_INITIAL_SCORE 200
+//#define PLAYER_INITIAL_RADIUS 50
+//#define PLAYER_INITIAL_SCORE 200
 #define PLAYER_INITIAL_SPEED 6			//玩家初始速度
 #define PLAYER_INITIAL_VECTOR 0.5	        //玩家位移最小量
 #define PLAYER_MIN_SPEED 1			//玩家最小速度

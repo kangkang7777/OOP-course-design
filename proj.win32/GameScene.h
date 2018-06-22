@@ -1,9 +1,11 @@
 #ifndef _GameScene_H_
 #define _GameScene_H_
+
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 #include "Function.h"
 #include "Gamelayer.h"
+#include "ShowLayer.h"
 USING_NS_CC;
 
 using namespace ui;

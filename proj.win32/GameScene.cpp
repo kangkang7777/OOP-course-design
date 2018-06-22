@@ -11,11 +11,14 @@ enum GameZOrder
 
 Scene* GameScene::createScene()
 {
-	auto scene = Scene::create();
+	auto scene = GameScene::create();
 
-	auto layer = GameScene::create();
+	//auto layer = GameScene::create();
+	auto showLayer = ShowLayer::create();
+	scene->addChild(showLayer, GAME_DATA_Z);
 
-	scene->addChild(layer);
+	auto gameLayer = GameLayer::create();
+	scene->addChild(gameLayer, GAME_LAYER_Z);
 
 	return scene;
 }
@@ -34,13 +37,13 @@ bool GameScene::init()
 	{
 		return false;
 	}
-
+	/*
 	//Éú³É±³¾°
 	auto map = Sprite::create("background.jpg");
 	map->setAnchorPoint(Vec2(0, 0));
 	map->setPosition(0, 0);
 	this->addChild(map, 0);
-	/*
+	
 	//Éú³ÉÍæ¼Ò
 	Player *player1 = Player::create(Vec2(1920,1080),"player.png");
 	//player1->setPosition(1920, 1080);
@@ -56,7 +59,9 @@ bool GameScene::init()
 	//Éú³ÉÁ÷ÐÇ´¸
 
 	//ÊÓ½Ç¸úËæ
-	
+		auto s = Director::getInstance()->getWinSize();
+	_map->runAction(Follow::create(_player, Rect(0, 0, s.width * 3, s.height * 3)));
+
 
 	//¼üÅÌ¼àÌý&×¢²á
 	auto k_listener = EventListenerKeyboard::create();
@@ -68,8 +73,14 @@ bool GameScene::init()
 	this->scheduleUpdate();
 	this->schedule(schedule_selector(GameScene::borderControl), 0.1f);
 	*/
-	auto gameLayer = GameLayer::create();
-	this->addChild(gameLayer, GAME_LAYER_Z);
+	
+	//auto showLayer = ShowLayer::create();
+	//this->addChild(showLayer, GAME_DATA_Z);
+	//auto gameLayer = GameLayer::create();
+	//this->addChild(gameLayer, GAME_LAYER_Z);
+
+	
+
 	return true;
 }
 

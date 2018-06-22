@@ -51,6 +51,9 @@
     <ClCompile Include="Gamelayer.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="ShowLayer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -90,6 +93,9 @@
       <Filter>src\General</Filter>
     </ClInclude>
     <ClInclude Include="Gamelayer.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="ShowLayer.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

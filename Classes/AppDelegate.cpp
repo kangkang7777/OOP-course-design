@@ -1,6 +1,6 @@
 #include "AppDelegate.h"
-#include "MenuScene.h"
-
+//#include "MenuScene.h"
+#include "GameScene.h"
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1
 
@@ -96,14 +96,15 @@ bool AppDelegate::applicationDidFinishLaunching()
 	glview->setDesignResolutionSize(1280,720, ResolutionPolicy::SHOW_ALL);
 	register_all_packages();
 	//关闭深度测试&使用2d投影
-	CCDirector::sharedDirector()->setDepthTest(false);;
-	CCDirector::sharedDirector()->setProjection(kCCDirectorProjection2D);
+	//CCDirector::sharedDirector()->setDepthTest(false);;
+	//CCDirector::sharedDirector()->setProjection(kCCDirectorProjection2D);
     // create a scene. it's an autorelease object初始化场景
+	/*
     auto scene = MenuScene::createScene();
-
-    // 场景跳转
     director->runWithScene(scene);
-
+	*/
+	auto scene = GameScene::createScene();
+	director->runWithScene(scene);
     return true;
 }
 
