@@ -84,8 +84,13 @@ bool GameLayer::init()
 	//this->schedule(schedule_selector(GameLayer::synPlayerMove), 0.1);
 	//this->schedule(schedule_selector(GameLayer::synSporeInfo), 0.1);
 	this->scheduleOnce(schedule_selector(GameLayer::startAddPrick), 3);
-
-	
+	/*
+	auto m_listener = EventListenerTouchOneByOne::create();
+	m_listener->onTouchBegan = CC_CALLBACK_2(GameLayer::onTouchBegan, this);
+	m_listener->onTouchMoved = CC_CALLBACK_2(GameLayer::onTouchMoved, this);
+	m_listener->onTouchEnded = CC_CALLBACK_2(GameLayer::onTouchEnded, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(m_listener, this);
+	*/
 	//键盘监听&注册
 	auto k_listener = EventListenerKeyboard::create();
 	k_listener->onKeyPressed = CC_CALLBACK_2(GameLayer::onKeyPressed, this);
@@ -106,11 +111,44 @@ void GameLayer::update(float dt)
 	updateView();
 	collideRival();
 	//updateplayermove(_player);
+
+	updateplayermove_key(_player);
+	//updateplayermove_touch(_player);
+
 	//synPlayerInfo();
 	//synPlayerMove();
 	//synSporeInfo();
 }
+/*
+bool GameLayer::onTouchBegan(Touch *touch, Event *event)
+{
 
+	
+	//创建方向盘
+	steer->setOpacity(200);
+	steer->setPosition(touch->getStartLocation());
+
+	return true;
+}
+// trigger when moving touch
+void GameLayer::onTouchMoved(Touch *touch, Event *event)
+{
+
+	//auto target = static_cast<Sprite*>(event->getCurrentTarget());
+	//start point
+
+	//->addChild(steer, 2);
+	//如果在园外 则为一倍速度 在园内 实际速度
+	vect = (touch->getLocation() - touch->getPreviousLocation()).getNormalized();
+	
+	
+}
+void GameLayer::onTouchEnded(Touch *touch, Event *event)
+{
+	//hide the steer
+	steer->setOpacity(0);
+}
+*/
 //键盘操作
 void GameLayer::onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event *event)
 {
@@ -261,7 +299,7 @@ void GameLayer::initSpore()
 */
 
 //player移动
-void GameLayer::updateplayermove(Player * player)
+void GameLayer::updateplayermove_key(Player * player)
 {
 	int var_x = 0, var_y = 0;
 	const int moveDistance = 5;
@@ -279,10 +317,16 @@ void GameLayer::updateplayermove(Player * player)
 		var_y = -moveDistance;
 	Vec2 vec(var_x, var_y);
 	player->setVec(vec);
-	auto moveTo = MoveBy::create(PLAYER_INITIAL_VECTOR, player->getVec());
-	player->runAction(moveTo);
+	auto moveBy = MoveBy::create(PLAYER_INITIAL_VECTOR, player->getVec());
+	player->runAction(moveBy);
 }
-
+/*
+void GameLayer::updateplayermove_touch(Player * player)
+{
+	auto moveBy = MoveBy::create(0.5, vect);
+	player->runAction(moveBy);
+}
+*/
 void GameLayer::updateView()
 {
 	auto rect = _player->getPlayerRect();
@@ -491,8 +535,9 @@ void GameLayer::updatePrick()
 		std::string msg = buffer.GetString();
 		WebSocketManager::getInstance()->sendMsg(msg);
 	}
-	vecDel.clear();
 	*/
+	vecDel.clear();
+	
 }
 
 void GameLayer::updateRival()
@@ -507,7 +552,7 @@ void GameLayer::updateRival()
 		}
 	}
 }
-
+/*
 void GameLayer::updateRank(float dt)
 {
 	Vector<Player *> vec;
@@ -543,7 +588,7 @@ void GameLayer::updateScore(float dt)
 
 	_eventDispatcher->dispatchCustomEvent("ScoreChange", &score);
 }
-
+*/
 //检测玩家与敌人的碰撞
 void GameLayer::collideRival()
 {
@@ -596,6 +641,7 @@ void GameLayer::collideRival()
 	
 	}*/
 }
+
 /*
 void GameLayer::spitSpore()
 {
@@ -641,6 +687,7 @@ void GameLayer::dividePlayer()
 	//WebSocketManager::getInstance()->sendMsg(msg);
 }
 */
+
 void GameLayer::resetFoods(Node * node)
 {
 	node->setVisible(true);

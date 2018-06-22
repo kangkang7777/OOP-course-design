@@ -40,6 +40,12 @@ public:
 	void onKeyReleased(EventKeyboard::KeyCode keycode, cocos2d::Event *event);
 	bool isKeyPressed(EventKeyboard::KeyCode keyCode);
 	
+	//touch event
+	/*
+	bool onTouchBegan(Touch *touch, Event *event);
+	void onTouchMoved(Touch *touch, Event *event);
+	void onTouchEnded(Touch *touch, Event *event);
+	*/
 	
 	//void initData();			//初始化地图数据
 	//void initRival(rapidjson::Value &value);		//初始化对手
@@ -59,11 +65,14 @@ public:
 	void updateView();		//更新游戏视图
 	void updateFoods();		//更新食物
 	void updateSpore();		//更新孢子
-	void updatePrick();		//更新绿刺
 	void updateRival();		//更新对手
+	void updatePrick();		//更新绿刺
+	/*
 	void updateRank(float dt);		//更新排行榜信息
 	void updateScore(float dt);		//更新分数
-	void updateplayermove(Player *player);      //所有player的移动
+	*/
+	void updateplayermove_key(Player *player);      //所有player的移动
+	//void updateplayermove_touch(Player *player);      
 
 	void startAddPrick(float dt);
 	void addPrick(float dt);
@@ -94,6 +103,7 @@ public:
 	*/
 	//void sendTimeChange(float dt);
 private:
+
 	//用以储存按下的键
 	std::map<cocos2d::EventKeyboard::KeyCode, bool> keys;
 	Node * _map;				//地图
