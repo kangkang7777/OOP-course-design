@@ -1,1 +1,0 @@
-运行之前，请将此文件夹里的文件放到project\cocos2d\cocos\audio\win32\下

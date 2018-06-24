@@ -36,33 +36,16 @@ bool GameLayer::init()
 	initDataDefault();
 
 	this->scheduleUpdate();
-<<<<<<< HEAD
 	this->scheduleOnce(schedule_selector(GameLayer::startAddPrick), 3);
 	this->schedule(schedule_selector(GameLayer::randomResetFoods), 2);
     this->schedule(schedule_selector(GameLayer::updaterivalmove), 0.5);
 	this->schedule(schedule_selector(GameLayer::scoreRank), 2);
 	this->schedule(schedule_selector(GameLayer::timeCountDown), 1);
-=======
-	this->schedule(schedule_selector(GameLayer::updateScore), 1);
-	this->schedule(schedule_selector(GameLayer::updateRank), 2);
-	//this->schedule(schedule_selector(GameLayer::synPlayerInfo), 0.2);
-	//this->schedule(schedule_selector(GameLayer::synPlayerMove), 0.1);
-	//this->schedule(schedule_selector(GameLayer::synSporeInfo), 0.1);
-	//this->scheduleOnce(schedule_selector(GameLayer::startAddPrick), 3);
-
-	auto m_listener = EventListenerTouchOneByOne::create();
-	m_listener->onTouchBegan = CC_CALLBACK_2(GameLayer::onTouchBegan, this);
-	m_listener->onTouchMoved = CC_CALLBACK_2(GameLayer::onTouchMoved, this);
-	m_listener->onTouchEnded = CC_CALLBACK_2(GameLayer::onTouchEnded, this);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(m_listener, this);
-
->>>>>>> 0d8ac110f49d626fcb30df5798027d802c9b79d2
 	//键盘监听&注册
 	auto k_listener = EventListenerKeyboard::create();
 	k_listener->onKeyPressed = CC_CALLBACK_2(GameLayer::onKeyPressed, this);
 	k_listener->onKeyReleased = CC_CALLBACK_2(GameLayer::onKeyReleased, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(k_listener, this);
-<<<<<<< HEAD
 	
 	//
 	
@@ -116,14 +99,6 @@ bool GameLayer::init()
 	this->addChild(_timeBoard);
 	_timeBoard->addChild(_timeLabel, 4);
 	_timeLabel->setPosition(0, 0);
-=======
-
-	//视角跟随主角
-	//不应该这样
-	/*auto s = Director::getInstance()->getWinSize();
-	this->runAction(Follow::create(player, Rect(0, 0, s.width * 3, s.height * 3)));*/
-
->>>>>>> 0d8ac110f49d626fcb30df5798027d802c9b79d2
 	return true;
 }
 
@@ -134,7 +109,6 @@ void GameLayer::update(float dt)
 	_player->updateDivision();
 	updateRival();
 	updateView();
-<<<<<<< HEAD
 	collideRival(); 
 	updateonExit();
 
@@ -146,43 +120,6 @@ void GameLayer::timeCountDown(float dt)
 {
 	maxTime -= 1;
 	_timeLabel->setString(StringUtils::format("%d : %d", maxTime / 60, maxTime % 60));
-=======
-	collide();
-	updateplayermove_key(_player);
-	updateplayermove_touch(_player);
-	//synPlayerInfo();
-	//synPlayerMove();
-	//synSporeInfo();
->>>>>>> 0d8ac110f49d626fcb30df5798027d802c9b79d2
-}
-
-bool GameLayer::onTouchBegan(Touch *touch, Event *event)
-{
-
-	
-	//创建方向盘
-	steer->setOpacity(200);
-	steer->setPosition(touch->getStartLocation());
-
-	return true;
-}
-// trigger when moving touch
-void GameLayer::onTouchMoved(Touch *touch, Event *event)
-{
-
-	//auto target = static_cast<Sprite*>(event->getCurrentTarget());
-	//start point
-
-	//->addChild(steer, 2);
-	//如果在园外 则为一倍速度 在园内 实际速度
-	vect = (touch->getLocation() - touch->getPreviousLocation()).getNormalized();
-	
-	
-}
-void GameLayer::onTouchEnded(Touch *touch, Event *event)
-{
-	//hide the steer
-	steer->setOpacity(0);
 }
 
 //键盘操作
@@ -344,7 +281,6 @@ void GameLayer::addPrick(float dt)
 //player移动
 void GameLayer::updateplayermove_key(Player * player)
 {
-<<<<<<< HEAD
 	float var_x = 0, var_y = 0;
 	const float moveDistance = 2;
 	auto leftArrow_1 = EventKeyboard::KeyCode::KEY_LEFT_ARROW;
@@ -356,15 +292,6 @@ void GameLayer::updateplayermove_key(Player * player)
 	auto upArrow_2 = EventKeyboard::KeyCode::KEY_W;
 	auto downArrow_2 = EventKeyboard::KeyCode::KEY_S;
 	if (keys[leftArrow_1]|| keys[leftArrow_2])
-=======
-	int var_x = 0, var_y = 0;
-	const int moveDistance = 5;
-	auto leftArrow = EventKeyboard::KeyCode::KEY_LEFT_ARROW;
-	auto rightArrow = EventKeyboard::KeyCode::KEY_RIGHT_ARROW;
-	auto upArrow = EventKeyboard::KeyCode::KEY_UP_ARROW;
-	auto downArrow = EventKeyboard::KeyCode::KEY_DOWN_ARROW;
-	if (keys[leftArrow])
->>>>>>> 0d8ac110f49d626fcb30df5798027d802c9b79d2
 		var_x = -moveDistance;
 	else if (keys[rightArrow_1]|| keys[rightArrow_2])
 		var_x = moveDistance;
@@ -372,7 +299,6 @@ void GameLayer::updateplayermove_key(Player * player)
 		var_y = moveDistance;
 	else if (keys[downArrow_1]|| keys[downArrow_2])
 		var_y = -moveDistance;
-<<<<<<< HEAD
 	if (var_x == 0 && var_y == 0)
 	{
 		player->setConcentrate();
@@ -382,17 +308,10 @@ void GameLayer::updateplayermove_key(Player * player)
 		Vec2 vec(var_x, var_y);
 		player->setVec(vec);
 	}
-=======
-	Vec2 vec(var_x, var_y);
-	player->setVec(vec);
-	auto moveBy = MoveBy::create(PLAYER_INITIAL_VECTOR, player->getVec());
-	player->runAction(moveBy);
->>>>>>> 0d8ac110f49d626fcb30df5798027d802c9b79d2
 }
 
 void GameLayer::updateplayermove_touch(Player * player)
 {
-<<<<<<< HEAD
 	if(_touchEventVec==Vec2(0,0))
 		player->setConcentrate();
 	else
@@ -426,10 +345,6 @@ void GameLayer::updaterivalmove(float dt)
 			rival->setConcentrate();
 		}
 	}
-=======
-	auto moveBy = MoveBy::create(0.5, vect);
-	player->runAction(moveBy);
->>>>>>> 0d8ac110f49d626fcb30df5798027d802c9b79d2
 }
 
 void GameLayer::updateView()

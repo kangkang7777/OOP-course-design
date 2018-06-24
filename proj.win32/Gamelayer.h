@@ -41,17 +41,11 @@ public:
 	bool isKeyPressed(EventKeyboard::KeyCode keyCode);
 	
 	//touch event
-<<<<<<< HEAD
 	
 	bool onTouchBegan(Touch *touch, Event *event);
 	void onTouchMoved(Touch *touch, Event *event);
 	void onTouchEnded(Touch *touch, Event *event);
 	
-=======
-	bool onTouchBegan(Touch *touch, Event *event);
-	void onTouchMoved(Touch *touch, Event *event);
-	void onTouchEnded(Touch *touch, Event *event);
->>>>>>> 0d8ac110f49d626fcb30df5798027d802c9b79d2
 	
 	//初始化
 	void initDataDefault();
@@ -64,19 +58,12 @@ public:
 	void updateView();		//更新游戏视图
 	void updateFoods();		//更新食物
 	void updateRival();		//更新对手
-<<<<<<< HEAD
 	void updatePrick();		//更新绿刺
 
 	void updaterivalmove(float dt);
 	void updateplayermove_key(Player *player);      //所有player的移动
 	void updateplayermove_touch(Player *player);    
 	void updateonExit();
-=======
-	void updateRank(float dt);		//更新排行榜信息
-	void updateScore(float dt);		//更新分数
-	void updateplayermove_key(Player *player);      //所有player的移动
-	void updateplayermove_touch(Player *player);      
->>>>>>> 0d8ac110f49d626fcb30df5798027d802c9b79d2
 
 	void startAddPrick(float dt);
 	void addPrick(float dt);
@@ -92,10 +79,6 @@ public:
 	void timeCountDown(float dt);
 
 private:
-<<<<<<< HEAD
-=======
-	Point vect;//player运动向量
->>>>>>> 0d8ac110f49d626fcb30df5798027d802c9b79d2
 	//用以储存按下的键
 	std::map<cocos2d::EventKeyboard::KeyCode, bool> keys;
 	Node * _map;				//地图
