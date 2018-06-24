@@ -42,13 +42,7 @@
     <ClCompile Include="Prick.cpp">
       <Filter>src\General</Filter>
     </ClCompile>
-    <ClCompile Include="Spore.cpp">
-      <Filter>src\General</Filter>
-    </ClCompile>
     <ClCompile Include="Gamelayer.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="ShowLayer.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="SettingScene.cpp">
@@ -59,6 +53,9 @@
     </ClCompile>
     <ClCompile Include="CsvUtils.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="GamePause.cpp">
+      <Filter>src\General</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -92,13 +89,7 @@
     <ClInclude Include="Prick.h">
       <Filter>src\General</Filter>
     </ClInclude>
-    <ClInclude Include="Spore.h">
-      <Filter>src\General</Filter>
-    </ClInclude>
     <ClInclude Include="Gamelayer.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="ShowLayer.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="SettingScene.h">
@@ -109,6 +100,9 @@
     </ClInclude>
     <ClInclude Include="CsvUtils.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePause.h">
+      <Filter>src\General</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

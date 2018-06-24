@@ -2,7 +2,6 @@
 #include "macro.h"
 #include "Foods.h"
 #include "Prick.h"
-#include "Spore.h"
 
 Division::Division()
 {
@@ -106,7 +105,7 @@ void Division::scaleSprite()
 	if (_score >= PLAYER_MIN_SHOW_VESTMENT_SCORE && !_showVestment)
 	{
 		_showVestment = true;
-		std::string path = StringUtils::format("public/keyword_%d.png", _vestmentID);
+		std::string path = StringUtils::format("public/vestment_%d.png", _vestmentID);
 		this->setTexture(path);
 	}
 	else if (_score<200 && _showVestment)
@@ -121,36 +120,7 @@ void Division::scaleSprite()
 
 	this->setScale(scale);
 }
-/*
-void Division::spitSpore()
-{
-	_score -= SPORE_SCORE;
-	calculateData();
-}
 
-bool Division::collideSpore(Spore * spore)
-{
-	if (_score<PLAYER_MIN_EAT_SPORE_SCORE)
-	{
-		return false;
-	}
-
-	Vec2 position = this->getPosition();
-	Vec2 sporePosition = spore->getPosition();
-	if (position.distance(sporePosition) <= _radius)
-	{
-		eatSpore(spore);
-		return true;
-	}
-	return false;
-}
-
-void Division::eatSpore(Spore * spore)
-{
-	_score += spore->getScore();
-	calculateData();
-}
-*/
 void Division::divide()
 {
 	_score /= 2;

@@ -19,14 +19,12 @@ public:
 	bool init(const std::string &name, const int vestmentID, int keywordID, int score);
 
 	bool collideFoods(Foods * food);
-	//bool collideSpore(Spore *spore);
 	bool collidePrick(Prick *prick);
 
 	float getSpeed();
 	void calculateData();
 
 	void eatFoods(Foods * food);
-	//void eatSpore(Spore * spore);
 	void eatRival(int score);
 	void eatPrick(int score);
 

@@ -9,10 +9,10 @@
 #include "Player.h"
 #include "Entity.h"
 #include "Foods.h"
-#include "Spore.h"
 #include "Prick.h"
 #include "Division.h"
 #include "GameScene.h"
+#include "SettingScene.h"
 
 USING_NS_CC_EXT;
 USING_NS_CC;
@@ -41,19 +41,12 @@ public:
 	bool isKeyPressed(EventKeyboard::KeyCode keyCode);
 	
 	//touch event
-	/*
+	
 	bool onTouchBegan(Touch *touch, Event *event);
 	void onTouchMoved(Touch *touch, Event *event);
 	void onTouchEnded(Touch *touch, Event *event);
-	*/
 	
-	//void initData();			//初始化地图数据
-	//void initRival(rapidjson::Value &value);		//初始化对手
-	//void initPlayer(rapidjson::Value &value);		//初始化玩家
-	//void initFoods(int seed);						//初始化食物
-	//void initSpore(rapidjson::Value &value);		//初始化孢子
-	//void initPrick(rapidjson::Value &value);		//初始化绿刺
-
+	
 	//初始化
 	void initDataDefault();
 	void initRival();
@@ -64,48 +57,28 @@ public:
 	virtual void update(float dt);		//每帧更新
 	void updateView();		//更新游戏视图
 	void updateFoods();		//更新食物
-	//void updateSpore();		//更新孢子
 	void updateRival();		//更新对手
 	void updatePrick();		//更新绿刺
-	/*
-	void updateRank(float dt);		//更新排行榜信息
-	void updateScore(float dt);		//更新分数
-	*/
+
+	void updaterivalmove(float dt);
 	void updateplayermove_key(Player *player);      //所有player的移动
-	//void updateplayermove_touch(Player *player);      
+	void updateplayermove_touch(Player *player);    
+	void updateonExit();
 
 	void startAddPrick(float dt);
 	void addPrick(float dt);
-
 	void collidePrick(Player * player);     //与刺球的碰撞
 	void collideFoods(Player * player);		//与食物的碰撞检测
 	void collideRival();			       //与敌人的碰撞检测
 
+	void scoreRank(float dt);                     //分数
 	void randomResetFoods(float dt);            //随机重置食物
 	void resetFoods(Node * node);		//重置食物
 	void resetPlayer();
-	/*
-	void spitSpore();		//吐孢子操作
-	void dividePlayer();		//分身操作
-
-	void synPlayerMove();		//同步玩家移动
-	void synPlayerInfo();		//同步玩家信息
-	void synSporeInfo();		//同步孢子
-	void synPlayerConcentrate();		//同步玩家中合操作
-
-									//处理服务器返回消息
-									
-	void playerMoveEvent(EventCustom * event);
-	void playerDivideEvent(EventCustom * event);
-	void spitSporeResultEvent(EventCustom * event);
-	void addPrickEvent(EventCustom * event);
-	void enterPlayerEvent(EventCustom * event);
-	void playerConcentrateEvent(EventCustom * event);
-	void updatePlayerEvent(EventCustom * event);
-	*/
 	//void sendTimeChange(float dt);
-private:
+	void timeCountDown(float dt);
 
+private:
 	//用以储存按下的键
 	std::map<cocos2d::EventKeyboard::KeyCode, bool> keys;
 	Node * _map;				//地图
@@ -113,13 +86,22 @@ private:
 	Map<std::string, Player *> _rival;		//对手列表
 	Vector<Foods *> _food;			//食物
 	Vector<Prick *> _prick;         //绿刺
-	//Map<int, Prick *> _prickMap;			
-	//Map<int, Spore *> _sporeMap;			//孢子
-	//std::vector<int> _vecSporeNeedUpdate;			//需要更新的孢子
 	float _mapScale;			//地图缩放因子
-	//float _timeCount;
-	//int _mode;			//游戏模式
-	//int _roomID;		//房间id
+	Node * _Njoystick;
+	Node * _scoreBoard;
+	Sprite * _joystick;
+	Vec2 _touchEventVec;
+	Label* label1;
+	Label* label2;
+	Label* label3;
+	Label* labelMy;
+	std::string name[20] = { "Sydi","Soo","Ali","Stern","Alica","Owen","Fans","Quene","Meimen","Prik","Greg","Laura","Edward","Barbara"
+		,"Yang","Lynn","Pete","Llyod" };
+
+	Label * _timeLabel;
+	int maxTime = 300;
+	Node * _timeBoard;
+	Sprite * _joySteer;
 };
 
 #endif

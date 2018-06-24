@@ -1,10 +1,10 @@
-#include "SettingScene.h"
-#include "SimpleAudioEngine.h"
-#include "ui/CocosGUI.h"
-#include "iostream"
-#include "MenuScene.h"
+#ifndef __SettingScene_CPP__
+#define __SettingScene_CPP__
 
-USING_NS_CC;
+
+#include "SettingScene.h"
+
+
 
 using namespace cocos2d::ui;
 using namespace CocosDenshion;
@@ -25,9 +25,10 @@ bool SettingScene::init()
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	//添加设置界面背景
-	auto backgroundS = Sprite::create("Setting/setting_background.png");
+	auto backgroundS = Sprite::create("setting_background.png");
 	backgroundS->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 	this->addChild(backgroundS);
+	backgroundS->setScale(0.34, 0.34);
 
 	//音效开关按钮
 	auto soundOnMenuItem = MenuItemImage::create(
@@ -58,6 +59,32 @@ bool SettingScene::init()
 	this->addChild(label_2, 1);
 
 	label_2->enableOutline(Color4B(173, 225, 47, 255), 4);
+
+	//鼠标操作开关按钮
+	auto keyMenuItem = MenuItemImage::create(
+		"Setting/setting_game_off.png",
+		"Setting/setting_game_off.png"
+	);
+
+	auto mouseMenuItem = MenuItemImage::create(
+		"Setting/setting_game_on.png",
+		"Setting/setting_game_on.png"
+	);
+
+	auto playToggleMenuItem = MenuItemToggle::createWithCallback(
+		CC_CALLBACK_1(SettingScene::playCallback, this),
+		keyMenuItem,
+		mouseMenuItem,
+		NULL
+	);
+	playToggleMenuItem->setPosition(Director::getInstance()->convertToGL(Point(600, 358)));
+
+	auto label_3 = Label::createWithTTF("PLAY  BY  MOUSE", "fonts/Marker Felt.ttf", 30);
+	label_3->setPosition(Director::getInstance()->convertToGL(Point(273, 358)));
+	this->addChild(label_3, 1);
+
+	label_3->enableOutline(Color4B(173, 225, 47, 255), 4);
+
 
 	//创建滑动条
 	auto slider = Slider::create();
@@ -96,7 +123,7 @@ bool SettingScene::init()
 	float y = origin.y + visibleSize.height - returnItem->getContentSize().height / 2;
 	returnItem->setPosition(Vec2(x, y));
 
-	auto setting = Menu::create(soundToggleMenuItem, returnItem, NULL);
+	auto setting = Menu::create(soundToggleMenuItem, playToggleMenuItem, returnItem, NULL);
 	setting->setPosition(Vec2::ZERO);
 	this->addChild(setting);
 
@@ -118,6 +145,8 @@ void SettingScene::soundCallback(Ref* pSender)
 
 }
 
+
+
 void SettingScene::settingReturnCallback(Ref* pSender)
 {
 	Director::getInstance()->popScene();
@@ -136,3 +165,6 @@ void SettingScene::SliderCallBack(Ref *pSender, Slider::EventType type)
 		SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(item->getPercent() / 100.0f);
 	}
 }
+
+
+#endif

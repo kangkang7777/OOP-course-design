@@ -25,6 +25,9 @@ public:
 	static Player * create(Vec2  position, Node * map);
 	bool init(Vec2  position, Node * map);
 
+	static Player * create(Vec2  position, std::string & name, int vestmentID, int keywordID, Node * map);
+	bool init(Vec2  position, std::string & name, int vestmentID, int keywordID, Node * map);
+
 	static Player * create(std::string & name, int vestmentID, int keywordID, Vec2 velocity, Node * map);
 	bool init(std::string & name, int vestmentID, int keywordID, Vec2 velocity, Node * map);
 
@@ -32,8 +35,6 @@ public:
 
 	Division * createDivision(Vec2 position, Vec2 velocity, int score);
 
-	//int countSpitSporeNum();		//计算玩家一次可以吐出几个孢子
-	//void spitSpore(Node * map, Map<int, Spore *> & sporeMap, int globalID);		//吐孢子
 	void dividePlayer();		//分身
 
 	bool collideFoods(Foods * food);		//与食物的碰撞检测

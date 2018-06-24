@@ -1,6 +1,5 @@
 #include "Player.h"
 #include "Division.h"
-#include "Spore.h"
 #include "Prick.h"
 #include "macro.h"
 //#include "I18N.h"
@@ -35,14 +34,43 @@ bool Player::init(Vec2 position, Node * map)
 		return false;
 	}
 
-
 	int nameIndex = rand() % 10 + 1;
 	_playerName = "Player";
-	//_playerName = CCString::createWithFormat("%s", I18N::shareI18N()->getcStringByKey(nameIndex));
 
 	_map = map;
 	_vestmentID = 1;
 	_keywordID = 2;
+	_state = State::NORMAL;
+	_combineEnable = true;
+
+	auto division = this->createDivision(position, Vec2::ZERO, PLAYER_INITIAL_SCORE);
+	_map->addChild(division, PLAYER_INITIAL_SCORE);
+
+	return true;
+}
+
+Player * Player::create(Vec2  position, std::string & name, int vestmentID, int keywordID, Node * map)
+{
+	Player * player = new Player();
+	if (player && player->init(position,name, vestmentID, keywordID, map))
+	{
+		player->autorelease();
+		return player;
+	}
+	CC_SAFE_DELETE(player);
+	return nullptr;
+}
+
+bool Player::init(Vec2  position, std::string & name, int vestmentID, int keywordID, Node * map)
+{
+	if (!Node::init())
+	{
+		return false;
+	}
+	_playerName = name;
+	_map = map;
+	_vestmentID = vestmentID;
+	_keywordID = keywordID;
 	_state = State::NORMAL;
 	_combineEnable = true;
 
@@ -273,8 +301,6 @@ void Player::updateDivision()
 							float distance = ((radius1 + radius2) - oldDistance) / 2;
 							Vec2 vec = oldPosition - position2;
 							float angle = vec.getAngle();
-							//newPosition = Vec2(oldPosition.x + cosf(angle), oldPosition.y + sinf(angle));
-							//division2->setPosition(Vec2(position2.x - cosf(angle), position2.y - sinf(angle)));
 							break;
 						}
 					}
@@ -392,55 +418,7 @@ void Player::updateDivision()
 		}
 	}
 }
-/*
-void Player::spitSpore(Node * map, Map<int, Spore *> & sporeMap, int globalID)
-{
-	for (auto division : _divisionList)
-	{
-		if (division != NULL)
-		{
-			int score = division->getScore();
-			if (score >= PLAYER_MIN_SPIT_SCORE)
-			{
-				division->spitSpore();
-				Vec2 position = division->getPosition();
-				float angle = division->getVec().getAngle();
-				float radius = division->getRadius();
-				Spore * spore = Spore::create("public/spore_1.png");
-				Vec2 sporePosition = Vec2(position.x + radius * cosf(angle) * 2, position.y + radius * sinf(angle) * 2);
-				spore->setPosition(sporePosition);
 
-				Vec2 newPosition = Vec2(PLAYER_MIN_SPIT_DISTANCE*cosf(angle), PLAYER_MIN_SPIT_DISTANCE*sinf(angle));
-				auto action = MoveBy::create(0.5, newPosition);
-				auto action2 = EaseOut::create(action, 1.8f);
-				spore->runAction(action2);
-				spore->setLocalZOrder(spore->getScore());
-				map->addChild(spore);
-				sporeMap.insert(globalID, spore);
-				globalID++;
-			}
-		}
-	}
-}
-
-bool Player::collideSpore(Spore * spore)
-{
-	for (auto division : _divisionList)
-	{
-
-		if (division != NULL)
-		{
-			if (division->collideSpore(spore))
-			{
-				division->setLocalZOrder((int)ceil(division->getScore()));
-				return true;
-			}
-		}
-	}
-
-	return false;
-}
-*/
 void Player::setCombine(float dt)
 {
 	_combineEnable = true;
@@ -471,7 +449,7 @@ bool Player::collidePrick(Prick *prick)
 	bool collideFlag = false;
 	for (auto division : _divisionList)
 	{
-		if (division != NULL)
+		if (division != NULL||!division->isVisible())
 		{
 			Vec2 prickPosition = prick->getPosition();
 			if (division->collidePrick(prick))
@@ -525,8 +503,8 @@ bool Player::collidePrick(Prick *prick)
 
 				}
 
-				this->scheduleOnce(schedule_selector(Player::setCombine), 15);
-
+				//this->scheduleOnce(schedule_selector(Player::setCombine), 15);
+				this->scheduleOnce(schedule_selector(Player::setCombine), 1);
 				return true;
 			}
 		}
@@ -546,6 +524,8 @@ bool Player::collideRival(Player * rival)
 	for (int i = 0; i < _divisionList.size(); i++)
 	{
 		auto division1 = _divisionList.at(i);
+		if (division1 == NULL||!division1->isVisible())
+			break;
 		int result = rival->collideDivision(division1);
 		if (result == 2) // 玩家分身被吃
 		{
@@ -576,17 +556,22 @@ int Player::collideDivision(Division * division)
 		Vec2 rivalPosition = division2->getPosition();
 		float rivalRadius = division2->getRadius();
 		float distance = playerPosition.distance(rivalPosition);
-		if (distance< abs(playerRadius - rivalRadius))
+		if (distance< abs(playerRadius - rivalRadius) && division2!=NULL)
 		{
 			int playerScore = division->getScore();
 			int rivalScore = division2->getScore();
+			//
+			if (!division2->isVisible())
+				break;
+			//
 			if (playerScore>rivalScore*MIN_EAT_MULTIPLE)  //玩家分身吃了对手
 			{
-				//
+				/*
 				_divisionList.eraseObject(division2);
 				division2->removeFromParentAndCleanup(true);
 				_divisionNum--;
-				//
+				*/
+				division2->setVisible(false);
 				division->eatRival(rivalScore);
 				return 1;
 			}
