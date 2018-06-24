@@ -19,7 +19,6 @@ public:
 	{
 		NORMAL, //正常状态
 		DIVIDE,  //分身状态
-		SPIT,  //吐球状态
 		CONCENTRATE  //主动中合状态
 	};
 
@@ -33,12 +32,12 @@ public:
 
 	Division * createDivision(Vec2 position, Vec2 velocity, int score);
 
-	int countSpitSporeNum();		//计算玩家一次可以吐出几个孢子
-	void spitSpore(Node * map, Map<int, Spore *> & sporeMap, int globalID);		//吐孢子
+	//int countSpitSporeNum();		//计算玩家一次可以吐出几个孢子
+	//void spitSpore(Node * map, Map<int, Spore *> & sporeMap, int globalID);		//吐孢子
 	void dividePlayer();		//分身
 
 	bool collideFoods(Foods * food);		//与食物的碰撞检测
-	bool collideSpore(Spore * spore);		//与孢子的碰撞检测
+	//bool collideSpore(Spore * spore);		//与孢子的碰撞检测
 	bool collidePrick(Prick *prick);		//与刺球的碰撞检测
 	bool collideRival(Player *rival);		//与对手的碰撞检测
 	int collideDivision(Division * division);		//与对手分身的碰撞
@@ -57,11 +56,10 @@ public:
 	Rect getPlayerRect();		//获取玩家包围盒
 	void setCombine(float dt);
 	int getDivisionNum();		//获取当前分身数量
-	float getTotalWeight();
+	float getTotalWeight();     //总体重
 	std::string getPlayerName();
-	int getTotalScore();
+	int getTotalScore();        //总分数
 	Vector<Division *> & getDivisionList();
-
 	void clearDivisionList();
 private:
 	Vector<Division *> _divisionList;		//玩家分身列表

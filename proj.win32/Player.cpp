@@ -37,12 +37,12 @@ bool Player::init(Vec2 position, Node * map)
 
 
 	int nameIndex = rand() % 10 + 1;
-	_playerName = "Hello";
+	_playerName = "Player";
 	//_playerName = CCString::createWithFormat("%s", I18N::shareI18N()->getcStringByKey(nameIndex));
 
 	_map = map;
-	_vestmentID = 2;
-	_keywordID = 1;
+	_vestmentID = 1;
+	_keywordID = 2;
 	_state = State::NORMAL;
 	_combineEnable = true;
 
@@ -255,6 +255,7 @@ void Player::updateDivision()
 			}
 
 			float radius1 = division->getRadius();
+			
 			if (!_combineEnable)//不在合体、分身状态，分身会进行碰撞检测
 			{
 				for (auto division2 : _divisionList)
@@ -266,9 +267,9 @@ void Player::updateDivision()
 						float oldDistance = position2.distance(oldPosition);
 						if (oldDistance <= radius1 + radius2)//处理分身时可能产生碰撞的情况
 						{
-							/*
-							将两个圆以圆心连接线分别向两边移动
-							*/
+							
+							//将两个圆以圆心连接线分别向两边移动
+							
 							float distance = ((radius1 + radius2) - oldDistance) / 2;
 							Vec2 vec = oldPosition - position2;
 							float angle = vec.getAngle();
@@ -279,7 +280,7 @@ void Player::updateDivision()
 					}
 				}
 			}
-
+			
 			if (newPosition.x <= radius1)
 			{
 				newPosition.x = radius1;
@@ -300,6 +301,7 @@ void Player::updateDivision()
 			division->setPosition(newPosition);
 		}
 	}
+	
 	if (!_combineEnable)//分身会进行碰撞检测，移动后如果产生碰撞则取消移动
 	{
 		for (auto division1 : _divisionList)
@@ -343,7 +345,7 @@ void Player::updateDivision()
 			}
 		}
 	}
-
+	
 	if (_combineEnable)  //处理分身合体
 	{
 		for (int i = 0; i < _divisionList.size(); i++)
@@ -366,7 +368,7 @@ void Player::updateDivision()
 							_divisionNum--;
 
 							_combineEnable = false;
-							this->scheduleOnce(schedule_selector(Player::setCombine), 8);
+							this->scheduleOnce(schedule_selector(Player::setCombine), 1);
 
 							if (radius1>radius2)
 							{
@@ -390,7 +392,7 @@ void Player::updateDivision()
 		}
 	}
 }
-
+/*
 void Player::spitSpore(Node * map, Map<int, Spore *> & sporeMap, int globalID)
 {
 	for (auto division : _divisionList)
@@ -438,7 +440,7 @@ bool Player::collideSpore(Spore * spore)
 
 	return false;
 }
-
+*/
 void Player::setCombine(float dt)
 {
 	_combineEnable = true;
@@ -509,6 +511,7 @@ bool Player::collidePrick(Prick *prick)
 					auto splitDivision = this->createDivision(divisionPosition, velocity, splitScore);
 					_map->addChild(splitDivision, splitScore);
 
+					
 					Vec2 newPosition = Vec2(PRICK_SPLIT_DISTANCE*cosf(angle), PRICK_SPLIT_DISTANCE*sinf(angle));
 					auto sequence = Sequence::create(
 						EaseOut::create(MoveBy::create(0.3f, newPosition), 1.8f),
@@ -516,7 +519,8 @@ bool Player::collidePrick(Prick *prick)
 						CallFunc::create(CC_CALLBACK_0(Player::collidePrickFinish, this)),
 						NULL);
 					splitDivision->runAction(sequence);
-
+			
+					
 					angle += anglePerDivision;
 
 				}
@@ -578,12 +582,17 @@ int Player::collideDivision(Division * division)
 			int rivalScore = division2->getScore();
 			if (playerScore>rivalScore*MIN_EAT_MULTIPLE)  //玩家分身吃了对手
 			{
+				//
+				_divisionList.eraseObject(division2);
+				division2->removeFromParentAndCleanup(true);
+				_divisionNum--;
+				//
 				division->eatRival(rivalScore);
 				return 1;
 			}
 			else if (rivalScore > playerScore*MIN_EAT_MULTIPLE)  //玩家分身被吃
 			{
-				//division2->eatRival(playerScore);
+				division2->eatRival(playerScore);
 				return 2;
 			}
 		}
@@ -659,7 +668,7 @@ void Player::clearDivisionList()
 	_divisionList.clear();
 	_divisionNum = 0;
 }
-
+/*
 int Player::countSpitSporeNum()
 {
 	int count = 0;
@@ -677,7 +686,7 @@ int Player::countSpitSporeNum()
 
 	return count;
 }
-
+*/
 void Player::collidePrickFinish()
 {
 	_state = State::CONCENTRATE;

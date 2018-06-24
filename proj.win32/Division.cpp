@@ -121,7 +121,7 @@ void Division::scaleSprite()
 
 	this->setScale(scale);
 }
-
+/*
 void Division::spitSpore()
 {
 	_score -= SPORE_SCORE;
@@ -150,7 +150,7 @@ void Division::eatSpore(Spore * spore)
 	_score += spore->getScore();
 	calculateData();
 }
-
+*/
 void Division::divide()
 {
 	_score /= 2;

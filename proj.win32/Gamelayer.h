@@ -64,7 +64,7 @@ public:
 	virtual void update(float dt);		//每帧更新
 	void updateView();		//更新游戏视图
 	void updateFoods();		//更新食物
-	void updateSpore();		//更新孢子
+	//void updateSpore();		//更新孢子
 	void updateRival();		//更新对手
 	void updatePrick();		//更新绿刺
 	/*
@@ -77,9 +77,11 @@ public:
 	void startAddPrick(float dt);
 	void addPrick(float dt);
 
+	void collidePrick(Player * player);     //与刺球的碰撞
 	void collideFoods(Player * player);		//与食物的碰撞检测
 	void collideRival();			       //与敌人的碰撞检测
 
+	void randomResetFoods(float dt);            //随机重置食物
 	void resetFoods(Node * node);		//重置食物
 	void resetPlayer();
 	/*
@@ -110,9 +112,10 @@ private:
 	Player * _player;			//玩家
 	Map<std::string, Player *> _rival;		//对手列表
 	Vector<Foods *> _food;			//食物
-	Map<int, Prick *> _prickMap;			//绿刺
-	Map<int, Spore *> _sporeMap;			//孢子
-	std::vector<int> _vecSporeNeedUpdate;			//需要更新的孢子
+	Vector<Prick *> _prick;         //绿刺
+	//Map<int, Prick *> _prickMap;			
+	//Map<int, Spore *> _sporeMap;			//孢子
+	//std::vector<int> _vecSporeNeedUpdate;			//需要更新的孢子
 	float _mapScale;			//地图缩放因子
 	//float _timeCount;
 	//int _mode;			//游戏模式

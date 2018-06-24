@@ -1,14 +1,10 @@
-#ifndef _MenuScene_H_
-#define _MenuScene_H_
+#ifndef __MenuScene_H__
+#define __MenuScene_H__
 
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
-#include "SimpleAudioEngine.h"
-#include "GameScene.h"
-#include "cocos-ext.h"
-#include<iostream>
+
 USING_NS_CC;
-USING_NS_CC_EXT;
 using namespace ui;
 
 class MenuScene : public cocos2d::Scene
@@ -16,12 +12,16 @@ class MenuScene : public cocos2d::Scene
 public:
 	static cocos2d::Scene* createScene();
 
-	bool init();
+	virtual bool init();
 
-	// a selector callback
-	void menuCloseCallback(cocos2d::Ref* pSender);
-	// another selector callback
-	void MenuScene::gameStartCallback(Ref *pSender, cocos2d::ui::Widget::TouchEventType type);
+	void menuStartCallback(cocos2d::Ref* pSender);
+	void menuSettingCallback(cocos2d::Ref* pSender);
+	void gameNameEvent(Ref * pSender, TextField::EventType type);
+	void menuPlayerCallback(Ref * pSender);
+	void menuResetNameCallback(Ref * pSender);
+
+	TextField * gameName;
+
 	// implement the "static create()" method manually
 	CREATE_FUNC(MenuScene);
 };

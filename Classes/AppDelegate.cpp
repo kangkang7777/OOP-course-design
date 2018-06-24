@@ -1,6 +1,6 @@
 #include "AppDelegate.h"
-//#include "MenuScene.h"
-#include "GameScene.h"
+#include "MenuScene.h"
+//#include "GameScene.h"
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1
 
@@ -103,7 +103,7 @@ bool AppDelegate::applicationDidFinishLaunching()
     auto scene = MenuScene::createScene();
     director->runWithScene(scene);
 	*/
-	auto scene = GameScene::createScene();
+	auto scene = MenuScene::createScene();
 	director->runWithScene(scene);
     return true;
 }

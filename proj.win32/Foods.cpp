@@ -25,11 +25,10 @@ Foods * Foods::create(const std::string& filename)
 
 bool Foods::init(const std::string& filename)
 {
-	if (!Entity::initWithSpriteFrameName(filename))
+	if (!Entity::initWithFile(filename))
 	{
 		return false;
 	}
-
 	_score = BEAN_SCORE;
 	_radius = BEAN_RADIUS;
 

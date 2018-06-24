@@ -21,9 +21,6 @@
     <ClCompile Include="..\Classes\AppDelegate.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="MenuScene.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="GameScene.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -54,15 +51,21 @@
     <ClCompile Include="ShowLayer.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="SettingScene.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuScene.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="CsvUtils.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\AppDelegate.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuScene.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="GameScene.h">
@@ -96,6 +99,15 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="ShowLayer.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingScene.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuScene.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="CsvUtils.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

@@ -14,8 +14,8 @@ Scene* GameScene::createScene()
 	auto scene = GameScene::create();
 
 	//auto layer = GameScene::create();
-	auto showLayer = ShowLayer::create();
-	scene->addChild(showLayer, GAME_DATA_Z);
+	//auto showLayer = ShowLayer::create();
+	//scene->addChild(showLayer, GAME_DATA_Z);
 
 	auto gameLayer = GameLayer::create();
 	scene->addChild(gameLayer, GAME_LAYER_Z);

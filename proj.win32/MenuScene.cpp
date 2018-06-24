@@ -1,142 +1,145 @@
+#include "AppDelegate.h"
 #include "MenuScene.h"
+#include "GameScene.h"
+#include "SettingScene.h"
+#include "SimpleAudioEngine.h"
+#include  "ui/CocosGUI.h"
+#include "SimpleAudioEngine.h"
+#include "CsvUtils.h"
+
+using namespace CocosDenshion;
+
+USING_NS_CC;
 
 Scene* MenuScene::createScene()
 {
 	return MenuScene::create();
 }
 
-// Print useful error message instead of segfaulting when files are not there.
 static void problemLoading(const char* filename)
 {
 	printf("Error while loading: %s\n", filename);
-	printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
+	printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in MenuSceneScene.cpp\n");
 }
 
-// on "init" you need to initialize your instance
 bool MenuScene::init()
 {
-	//////////////////////////////
-	// 1. super init first
 	if (!Scene::init())
 	{
 		return false;
 	}
 
+	//加载音乐
+	SimpleAudioEngine::sharedEngine()->preloadBackgroundMusic("BGM.mp3");
+	//设置默认音量
+	SimpleAudioEngine::sharedEngine()->setBackgroundMusicVolume(1);
+
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	/////////////////////////////
-	// 2. add a menu item with "X" image, which is clicked to quit the program
-	//    you may modify it.
-
-	// 退出按钮 add a "close" icon to exit the progress. it's an autorelease object
-	auto closeItem = MenuItemImage::create(
-		"CloseNormal.png",
-		"CloseSelected.png",
-		CC_CALLBACK_1(MenuScene::menuCloseCallback, this));
-
-	if (closeItem == nullptr ||
-		closeItem->getContentSize().width <= 0 ||
-		closeItem->getContentSize().height <= 0)
-	{
-		problemLoading("'CloseNormal.png' and 'CloseSelected.png'");
-	}
-	else
-	{
-		float x = origin.x + visibleSize.width - closeItem->getContentSize().width / 2;
-		float y = origin.y + closeItem->getContentSize().height / 2;
-		closeItem->setPosition(Vec2(x, y));
-	}
-	//开始按钮
-
-	//auto StartGame = Button::create("StartNormal.png", "StartSelected.png", "StartSelected.png");
-	auto StartGame = Button::create();
-	StartGame->setTouchEnabled(true);
-	StartGame->setTitleText("Start Game");
-	StartGame->setTitleFontSize(32);
-	StartGame->setPosition(Vec2(640,160));
-	StartGame->addTouchEventListener(CC_CALLBACK_2(MenuScene::gameStartCallback, this));
-	this->addChild(StartGame,10);
-	
+	//添加大厅背景
+	auto backgroundM = Sprite::create("menu_background.png");
+	backgroundM->setPosition((Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y)));
+	this->addChild(backgroundM, 0);
 	
 
-	// create exit menu, it's an autorelease object
-	auto menu_exit = Menu::create(closeItem, NULL);
-	//menu->setPosition(Vec2::ZERO);
-	menu_exit->setPosition(Vec2(0,0));
-	this->addChild(menu_exit, 1);
+	MenuItemImage *startMenuItem = MenuItemImage::create(
+		"menu_start_btn.png",
+		"menu_start_btn.png",
+		CC_CALLBACK_1(MenuScene::menuStartCallback, this)
+	);
+
+	startMenuItem->setPosition(383, 220);
+
+	MenuItemImage *settingMenuItem = MenuItemImage::create(
+		"Setting/setting_game_gameSetting_btn0.png",
+		"Setting/setting_game_gameSetting_btn1.png",
+		CC_CALLBACK_1(MenuScene::menuSettingCallback, this)
+	);
+
+	settingMenuItem->setPosition(383, 150);
+
+	auto resetNameItem = MenuItemImage::create(
+		"menu_reset.png",
+		"menu_reset.png",
+		CC_CALLBACK_1(MenuScene::menuResetNameCallback, this)
+	);
+
+	resetNameItem->setPosition(498, 287);
+
+	auto playerItem = MenuItemImage::create(
+		"menu_player_btn.png",
+		"menu_player_btn.png",
+		CC_CALLBACK_1(MenuScene::menuPlayerCallback, this)
+	);
+	
+	playerItem->setPosition(52, 412);
+
+	auto menu = Menu::create(startMenuItem, settingMenuItem, resetNameItem, playerItem, NULL);
+	menu->setPosition(Vec2::ZERO);
+	this->addChild(menu, 2);
+
+	auto label1 = Sprite::create("menu_label1.png");
+	label1->setPosition(288, 318);
+	this->addChild(label1, 3);
+
+	auto gameNameSprite = Sprite::create("menu_input_btn.png");
+	gameNameSprite->setPosition(383, 287);
+	this->addChild(gameNameSprite, 1);
+
+	int id = rand() % 31 + 1;
+	std::string name = CsvUtils::getInstance()->getMapData(id, 1, "name.csv");
+
+    //创建TextField组件，并设置相关参数
+	gameName = TextField::create("", "fonts/HKYuanMini", 22);
+	gameName->ignoreContentAdaptWithSize(false);
+	gameName->setContentSize(Size(240, 30));
+	gameName->setMaxLength(12);
+	gameName->setMaxLengthEnabled(true);
+	gameName->setString(name);
+	gameName->setTextHorizontalAlignment(TextHAlignment::LEFT);
+	gameName->setTextVerticalAlignment(TextVAlignment::CENTER);
+	gameName->setPosition(Vec2(368, 286));
+
+	gameName->addEventListener(CC_CALLBACK_2(MenuScene::gameNameEvent, this));
+	this->addChild(gameName, 2);
+
+	auto audio = SimpleAudioEngine::getInstance();
+
+	//设置背景音乐播放
+	audio->playBackgroundMusic("BGM.mp3", true);
 
 
-	/////////////////////////////
-	// 3. add your codes below...
 
-	// add a label shows the words
-	// create and initialize a label
-
-	//auto label = Label::createWithTTF("球球大作战", "fonts/Marker Felt.ttf", 36);
-	//if (label == nullptr)
-	//{
-	//	problemLoading("'fonts/Marker Felt.ttf'");
-	//}
-	//else
-	//{
-		// position the label on the center of the screen
-	//	label->setPosition(Vec2(origin.x + visibleSize.width / 2,
-	//		origin.y + visibleSize.height - label->getContentSize().height));
-
-		// add the label as a child to this layer
-	//	this->addChild(label, 1);
-	//}
-
-	// add "MenuScene" splash screen"
-	auto sprite = Sprite::create("MenuScene.png");
-	if (sprite == nullptr)
-	{
-		problemLoading("'MenuScene.png'");
-	}
-	else
-	{
-		// position the sprite on the center of the screen
-		sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
-
-		// add the sprite as a child to this layer
-		this->addChild(sprite, 0);
-	}
 	return true;
 }
 
 
-void MenuScene::menuCloseCallback(Ref* pSender)
+void MenuScene::menuStartCallback(Ref* pSender) 
 {
-	//Close the cocos2d-x game scene and quit the application
-	Director::getInstance()->end();
+	auto scene = GameScene::createScene();
+	Director::getInstance()->pushScene(TransitionFade::create(1.0f, scene));
+}
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-	exit(0);
-#endif
+void MenuScene::menuSettingCallback(Ref* pSender)
+{
+	auto scene = SettingScene::createScene();
+	Director::getInstance()->pushScene(TransitionFade::create(1.0f, scene));
+}
 
-	/*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() and exit(0) as given above,instead trigger a custom event created in RootViewController.mm as below*/
-
-	//EventCustom customEndEvent("game_scene_close_event");
-	//_eventDispatcher->dispatchEvent(&customEndEvent);
-
+void MenuScene::gameNameEvent(Ref * pSender, TextField::EventType type)
+{
 
 }
 
-
-void MenuScene::gameStartCallback(Ref *pSender, cocos2d::ui::Widget::TouchEventType type)
+void MenuScene::menuPlayerCallback(Ref * pSender)
 {
-	//场景跳转至正式游戏界面,进栈
-     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
-	{
-		//Director::getInstance()->pushScene(GameScene::createScene())
-			Director::getInstance()->pushScene(TransitionFade::create(3.0f, GameScene::createScene()));
-	}
-	
-//	Director::getInstance()->runWithScene(GameScene::createScene());
-	
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-	exit(0);
-#endif
 
+}
+
+void MenuScene::menuResetNameCallback(Ref * pSender)
+{
+	int id = rand() % 7;
+	std::string name = CsvUtils::getInstance()->getMapData(id, 1, "name.csv");
+	gameName->setString(name);
 }

@@ -20,8 +20,8 @@ GameLayer::~GameLayer()
 {
 	_rival.clear();
 	_food.clear();
-	_sporeMap.clear();
-	_prickMap.clear();
+	//_sporeMap.clear();
+	_prick.clear();
 	/*
 	_eventDispatcher->removeCustomEventListeners("Divide");
 	_eventDispatcher->removeCustomEventListeners("Spit");
@@ -84,6 +84,7 @@ bool GameLayer::init()
 	//this->schedule(schedule_selector(GameLayer::synPlayerMove), 0.1);
 	//this->schedule(schedule_selector(GameLayer::synSporeInfo), 0.1);
 	this->scheduleOnce(schedule_selector(GameLayer::startAddPrick), 3);
+	this->schedule(schedule_selector(GameLayer::randomResetFoods), 2);
 	/*
 	auto m_listener = EventListenerTouchOneByOne::create();
 	m_listener->onTouchBegan = CC_CALLBACK_2(GameLayer::onTouchBegan, this);
@@ -104,7 +105,7 @@ bool GameLayer::init()
 void GameLayer::update(float dt)
 {
 	updateFoods();
-	updateSpore();
+	//updateSpore();
 	updatePrick();
 	_player->updateDivision();
 	//updateRival();        //每个玩家信息由玩家客户端自己更新
@@ -206,15 +207,16 @@ void GameLayer::initPlayer()
 	_player->setLocalZOrder(_player->getTotalScore());
 	_map->addChild(_player);
 	//视角跟随主角
-	auto s = Director::getInstance()->getWinSize();
-	_map->runAction(Follow::create(_player, Rect(0, 0, s.width * 3, s.height * 3)));
+	//auto s = Director::getInstance()->getWinSize();
+	//_map->runAction(Follow::create(_player, Rect(0, 0, s.width * 3, s.height * 3)));
 
 }
 
 //敌人初始化(AI)
 void GameLayer::initRival()
 {
-	for (int i = 0; i < MAX_RIVAL_NUM; i++)
+	//for (int i = 0; i < MAX_RIVAL_NUM; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		float positionX =Random(0, DESIGN_SCREEN_WIDTH);
 		float positionY =Random(0,DESIGN_SCREEN_HEIGHT);
@@ -235,9 +237,8 @@ void GameLayer::initFoods()
 		{
 			    int type = Random(1, 4);
 			    int color = Random(1, 6);
-				//std::string path = StringUtils::format("gameScene/food%d_%d.png", type, color);
-				//auto food = Foods::create(path.c_str());
-				auto food = Foods::create("food1_1.png");
+				std::string path = StringUtils::format("gameScene/food%d_%d.png", type, color);
+				auto food = Foods::create(path.c_str());
 
 				food->setPosition(Vec2(_x + Random(-100, 100), _y + Random(-100, 100)));
 				food->setLocalZOrder(food->getScore());
@@ -257,7 +258,7 @@ void GameLayer::initPrick()
 		int y = Random(0,MAP_HEIGHT);
 		prick->setPosition(x, y);
 		_map->addChild(prick, prick->getScore());
-		_prickMap.insert(i, prick);
+		_prick.pushBack(prick);
 	}
 }
 
@@ -268,15 +269,13 @@ void GameLayer::startAddPrick(float dt)
 }
 void GameLayer::addPrick(float dt)
 {
-	static int id = 15;
 	Prick * prick = Prick::create("gameScene/prick.png");
 	int xPosition = rand() % MAP_WIDTH;
 	int yPosition = rand() % MAP_HEIGHT;
 	prick->setPosition(Vec2(xPosition, yPosition));
 	prick->setLocalZOrder(prick->getScore());
 	_map->addChild(prick);
-	_prickMap.insert(id, prick);
-	id++;
+	_prick.pushBack(prick);
 }
 
 /*
@@ -301,8 +300,9 @@ void GameLayer::initSpore()
 //player移动
 void GameLayer::updateplayermove_key(Player * player)
 {
-	int var_x = 0, var_y = 0;
-	const int moveDistance = 5;
+	/*
+	float var_x = 0, var_y = 0;
+	const float moveDistance = 2;
 	auto leftArrow = EventKeyboard::KeyCode::KEY_LEFT_ARROW;
 	auto rightArrow = EventKeyboard::KeyCode::KEY_RIGHT_ARROW;
 	auto upArrow = EventKeyboard::KeyCode::KEY_UP_ARROW;
@@ -319,6 +319,40 @@ void GameLayer::updateplayermove_key(Player * player)
 	player->setVec(vec);
 	auto moveBy = MoveBy::create(PLAYER_INITIAL_VECTOR, player->getVec());
 	player->runAction(moveBy);
+	*/
+	float var_x = 0, var_y = 0;
+	const float moveDistance = 5;
+	auto leftArrow = EventKeyboard::KeyCode::KEY_LEFT_ARROW;
+	auto rightArrow = EventKeyboard::KeyCode::KEY_RIGHT_ARROW;
+	auto upArrow = EventKeyboard::KeyCode::KEY_UP_ARROW;
+	auto downArrow = EventKeyboard::KeyCode::KEY_DOWN_ARROW;
+	if (keys[leftArrow])
+		var_x = -moveDistance;
+	else if (keys[rightArrow])
+		var_x = moveDistance;
+	if (keys[upArrow])
+		var_y = moveDistance;
+	else if (keys[downArrow])
+		var_y = -moveDistance;
+	if (player->getDivisionNum() < 2)
+	{
+		Vec2 vec(var_x, var_y);
+		player->setVec(vec);
+		auto moveBy = MoveBy::create(PLAYER_INITIAL_VECTOR, player->getVec());
+		player->runAction(moveBy);
+	}
+	else
+	{
+		for (auto division : player->getDivisionList())
+		{
+			Vec2 vec(var_x, var_y);
+			//vec = vec+(division->getVec() )/ 100;
+
+			auto moveBy = MoveBy::create(PLAYER_INITIAL_VECTOR, vec);
+			division->runAction(moveBy);
+		}
+	}
+	
 }
 /*
 void GameLayer::updateplayermove_touch(Player * player)
@@ -347,7 +381,6 @@ void GameLayer::updateView()
 void GameLayer::updateFoods()
 {
 	collideFoods(_player);
-
 	for (auto item : _rival)
 	{
 		auto rival = item.second;
@@ -360,6 +393,7 @@ void GameLayer::updateFoods()
 
 void GameLayer::collideFoods(Player * player)
 {
+	/*
 	Rect rect = player->getPlayerRect();
 	Vec2 position = player->getPosition();
 
@@ -371,7 +405,7 @@ void GameLayer::collideFoods(Player * player)
 	int divisionX2 = floor(point2.x / DESIGN_SCREEN_WIDTH);
 	int divisionY2 = floor(point2.y / DESIGN_SCREEN_HEIGHT);
 	int division2 = divisionY2 * MAP_DIVISION_X + divisionX2;
-
+	
 	//处理超出界限问题
 	if (divisionX1 < 0)
 	{
@@ -420,8 +454,40 @@ void GameLayer::collideFoods(Player * player)
 			}
 		}
 	}
+	*/
+
+	//对每个food 检测碰撞
+	for (auto food : _food) 
+	{
+		if (food->isVisible())
+		{
+			if (player->collideFoods(food))
+			{
+				food->setVisible(false);
+				float time = rand() % 10 + 10;//食物再次出现的Δt
+				break;
+				/*auto sequence = Sequence::create(
+				DelayTime::create(time),
+				CallFuncN::create(CC_CALLBACK_0(GameLayer::resetFoods, this, food)),
+				NULL);
+				food->runAction(sequence);*/
+			}
+		}
+
+	}
 }
 
+void GameLayer::randomResetFoods(float dt)
+{
+	for (auto food : _food)
+	{
+		if (!food->isVisible() && !Random(0, 10))
+		{
+			food->setVisible(true);
+		}
+	}
+}
+/*
 void GameLayer::updateSpore()
 {
 	std::vector<int> vecDel;
@@ -480,64 +546,30 @@ void GameLayer::updateSpore()
 	vecDel.clear();
 
 }
-
+*/
 void GameLayer::updatePrick()
 {
-	std::vector<int> vecDel;
-	for (auto prickItem : _prickMap)
+	collidePrick(_player);
+	for (auto item : _rival)
 	{
-		auto prick = prickItem.second;
-		if (prick != NULL)
+		auto rival = item.second;
+		if (rival != NULL)
 		{
-
-			if (_player->collidePrick(prick))
-			{
-				vecDel.push_back(prickItem.first);
-			}
-			/*else
-			{
-			for (auto item : _rival)
-			{
-			auto rival = item.second;
-			if (rival != NULL)
-			{
-			float radius = prick->getRadius();
-
-			if (rival->collidePrick(prick))
-			{
-			vecDel.push_back(prickItem.first);
-			break;
-			}
-			}
-			}
-			}*/
+			collidePrick(rival);
 		}
 	}
-	/*
-	for (auto key : vecDel)
+}
+
+void GameLayer::collidePrick(Player * player)
+{
+	for (auto prick : _prick)
 	{
-		auto prick = _prickMap.at(key);
-		_prickMap.erase(key);
-		prick->removeFromParentAndCleanup(true);
-
-		rapidjson::Document doc;
-		doc.SetObject();
-		rapidjson::Document::AllocatorType & allocator = doc.GetAllocator();
-
-		doc.AddMember("MsgType", MessageType::eMsg_EAT_PRICK, allocator);
-		doc.AddMember("RoomID", _roomID, allocator);
-		doc.AddMember("GlobalID", key, allocator);
-
-		rapidjson::StringBuffer buffer;
-		rapidjson::Writer<rapidjson::StringBuffer> write(buffer);
-		doc.Accept(write);
-
-		std::string msg = buffer.GetString();
-		WebSocketManager::getInstance()->sendMsg(msg);
+		if (prick->isVisible()&& prick != NULL && player->collidePrick(prick))
+		{
+			prick->setVisible(false);
+			break;
+		}
 	}
-	*/
-	vecDel.clear();
-	
 }
 
 void GameLayer::updateRival()
