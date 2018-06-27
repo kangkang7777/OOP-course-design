@@ -2,12 +2,10 @@
 #include "Division.h"
 #include "Prick.h"
 #include "macro.h"
-//#include "I18N.h"
-//#include "GlobalEnum.h"
 
-Player::Player()
+
+Player::Player():_divisionNum(0)
 {
-	_divisionNum = 0;
 }
 
 Player::~Player()
@@ -26,7 +24,6 @@ Player * Player::create(Vec2 position, Node * map)
 	CC_SAFE_DELETE(player);
 	return nullptr;
 }
-
 bool Player::init(Vec2 position, Node * map)
 {
 	if (!Node::init())
@@ -60,8 +57,7 @@ Player * Player::create(Vec2  position, std::string & name, int vestmentID, int 
 	CC_SAFE_DELETE(player);
 	return nullptr;
 }
-
-bool Player::init(Vec2  position, std::string & name, int vestmentID, int keywordID, Node * map)
+bool Player::init(Vec2  position, std::string & name, int vestmentID, int keywordID, Node * map) 
 {
 	if (!Node::init())
 	{
@@ -76,36 +72,6 @@ bool Player::init(Vec2  position, std::string & name, int vestmentID, int keywor
 
 	auto division = this->createDivision(position, Vec2::ZERO, PLAYER_INITIAL_SCORE);
 	_map->addChild(division, PLAYER_INITIAL_SCORE);
-
-	return true;
-}
-
-Player * Player::create(std::string & name, int vestmentID, int keywordID, Vec2 velocity, Node * map)
-{
-	Player * player = new Player();
-	if (player && player->init(name, vestmentID, keywordID, velocity, map))
-	{
-		player->autorelease();
-		return player;
-	}
-	CC_SAFE_DELETE(player);
-	return nullptr;
-}
-
-bool Player::init(std::string & name, int vestmentID, int keywordID, Vec2 velocity, Node * map)
-{
-	if (!Node::init())
-	{
-		return false;
-	}
-
-	_playerName = name;
-	_map = map;
-	_vestmentID = vestmentID;
-	_keywordID = keywordID;
-	_vector = velocity;
-	_state = State::NORMAL;
-	_combineEnable = true;
 
 	return true;
 }
@@ -363,8 +329,6 @@ void Player::updateDivision()
 							Vec2 newPosition1 = Vec2(position1.x - cosf(angle)*fixDistance, position1.y - sinf(angle)*fixDistance);
 							Vec2 newPosition2 = Vec2(position2.x + sinf(angle)*fixDistance, position2.y + sinf(angle)*fixDistance);
 							division1->setPosition(newPosition1);
-							//division2->setPosition(newPosition2);
-							//break;
 						}
 					}
 				}
@@ -493,7 +457,6 @@ bool Player::collidePrick(Prick *prick)
 					Vec2 newPosition = Vec2(PRICK_SPLIT_DISTANCE*cosf(angle), PRICK_SPLIT_DISTANCE*sinf(angle));
 					auto sequence = Sequence::create(
 						EaseOut::create(MoveBy::create(0.3f, newPosition), 1.8f),
-						//CallFunc::create(CC_CALLBACK_0(Player::divideFinish, this),
 						CallFunc::create(CC_CALLBACK_0(Player::collidePrickFinish, this)),
 						NULL);
 					splitDivision->runAction(sequence);
@@ -503,8 +466,7 @@ bool Player::collidePrick(Prick *prick)
 
 				}
 
-				//this->scheduleOnce(schedule_selector(Player::setCombine), 15);
-				this->scheduleOnce(schedule_selector(Player::setCombine), 1);
+				this->scheduleOnce(schedule_selector(Player::setCombine), 1);//此处修改合并时间间隔
 				return true;
 			}
 		}
@@ -556,7 +518,7 @@ int Player::collideDivision(Division * division)
 		Vec2 rivalPosition = division2->getPosition();
 		float rivalRadius = division2->getRadius();
 		float distance = playerPosition.distance(rivalPosition);
-		if (distance< abs(playerRadius - rivalRadius) && division2!=NULL)
+		if (distance < playerRadius && division2 != NULL)
 		{
 			int playerScore = division->getScore();
 			int rivalScore = division2->getScore();
@@ -566,12 +528,12 @@ int Player::collideDivision(Division * division)
 			//
 			if (playerScore>rivalScore*MIN_EAT_MULTIPLE)  //玩家分身吃了对手
 			{
-				/*
+				
 				_divisionList.eraseObject(division2);
 				division2->removeFromParentAndCleanup(true);
 				_divisionNum--;
-				*/
-				division2->setVisible(false);
+				
+				//division2->setVisible(false);
 				division->eatRival(rivalScore);
 				return 1;
 			}
@@ -585,18 +547,6 @@ int Player::collideDivision(Division * division)
 	return flag;
 }
 
-float Player::getTotalWeight()
-{
-	float weight = 0;
-	for (auto division : _divisionList)
-	{
-		if (division != NULL)
-		{
-			weight += division->getWeight();
-		}
-	}
-	return weight;
-}
 
 std::string  Player::getPlayerName()
 {
@@ -653,25 +603,7 @@ void Player::clearDivisionList()
 	_divisionList.clear();
 	_divisionNum = 0;
 }
-/*
-int Player::countSpitSporeNum()
-{
-	int count = 0;
-	for (auto division : _divisionList)
-	{
-		if (division != NULL)
-		{
-			int score = division->getScore();
-			if (score >= PLAYER_MIN_SPIT_SCORE)
-			{
-				count++;
-			}
-		}
-	}
 
-	return count;
-}
-*/
 void Player::collidePrickFinish()
 {
 	_state = State::CONCENTRATE;

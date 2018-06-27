@@ -8,12 +8,12 @@
 USING_NS_CC;
 using namespace ui;
 
-class Gamepause : public cocos2d::Scene
+class GamePause : public cocos2d::Scene
 {
 public:
 	virtual bool init();
 	static cocos2d::Scene* createScene();
-	CREATE_FUNC(Gamepause);
+	CREATE_FUNC(GamePause);
 	//¼ÌÐøÓÎÏ·  
 	void ContinueCallback(CCObject* pSender);
 	void ExitCallback(CCObject* pSender);

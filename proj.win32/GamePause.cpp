@@ -1,12 +1,12 @@
 #include "Gamepause.h"  
 
 
-Scene* Gamepause::createScene()
+Scene* GamePause::createScene()
 {
-	return Gamepause::create();
+	return GamePause::create();
 }
 
-bool Gamepause::init()
+bool GamePause::init()
 {
 
 	if (!Scene::init())
@@ -17,26 +17,13 @@ bool Gamepause::init()
 	CCSize visibleSize = CCDirector::sharedDirector()->getVisibleSize();
 	//原点坐标  
 	CCPoint origin = CCDirector::sharedDirector()->getVisibleOrigin();
-	/*
-	//继续游戏按钮  
-	CCMenuItemImage *pContinueItem = CCMenuItemImage::create(
-		"pause_continue.png",
-		"pause_continue.png",
-		this,
-		menu_selector(Gamepause::menuContinueCallback));
 
-	pContinueItem->setPosition(ccp(visibleSize.width / 2, visibleSize.height / 2 + 30));
-	
-	CCMenu* pMenu = CCMenu::create(pContinueItem, NULL);
-	pMenu->setPosition(CCPointZero);
-	this->addChild(pMenu, 2);
-	*/
 	auto button1 = Button::create();
 	button1->setTitleText("restart game");
 	button1->setPosition(Vec2(640,500));
 	button1->setTitleFontSize(32);
 	button1->setTouchEnabled(true);
-	button1->addTouchEventListener(CC_CALLBACK_1(Gamepause::ContinueCallback, this));
+	button1->addTouchEventListener(CC_CALLBACK_1(GamePause::ContinueCallback, this));
 	this->addChild(button1);
 
 	auto button2 = Button::create();
@@ -45,7 +32,7 @@ bool Gamepause::init()
 	button2->setTitleFontSize(32);
 	button2->setTouchEnabled(true);
 	this->addChild(button2);
-	button2->addTouchEventListener(CC_CALLBACK_1(Gamepause::ExitCallback, this));
+	button2->addTouchEventListener(CC_CALLBACK_1(GamePause::ExitCallback, this));
 
 	auto button3 = Button::create();
 	button3->setTitleText("Back to menu");
@@ -53,21 +40,20 @@ bool Gamepause::init()
 	button3->setTitleFontSize(32);
 	button3->setTouchEnabled(true);
 	this->addChild(button3);
-	button3->addTouchEventListener(CC_CALLBACK_1(Gamepause::menuCallback, this));
+	button3->addTouchEventListener(CC_CALLBACK_1(GamePause::menuCallback, this));
 	return true;
 }
-void Gamepause::ContinueCallback(CCObject* pSender)
+void GamePause::ContinueCallback(CCObject* pSender)
 {
       CCDirector::sharedDirector()->pushScene(GameScene::createScene());
-	//CCDirector::sharedDirector()->replaceScene(GameScene::createScene());
 }
 
-void Gamepause::ExitCallback(CCObject* pSender)
+void GamePause::ExitCallback(CCObject* pSender)
 {
 	CCDirector::sharedDirector()->end();
 }
 
-void Gamepause::menuCallback(CCObject* pSender)
+void GamePause::menuCallback(CCObject* pSender)
 {
 	CCDirector::sharedDirector()->popToRootScene();
 }

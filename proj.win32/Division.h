@@ -5,7 +5,6 @@
 
 class Foods;
 class Prick;
-class Spore;
 
 class Division : public Entity {
 public:
@@ -30,14 +29,10 @@ public:
 
 	virtual void setScore(int score);
 
-	//void spitSpore();
 	void divide();
 	void scaleSprite();
 	void setVestmentID(int id);
 	void setPlayerName(const std::string name);
-	void addWeight(float weight);
-	void setWeight(float weight);
-	float getWeight();
 	void setVelocity(Vec2 v);
 	Vec2 getVec();
 
@@ -54,8 +49,8 @@ private:
 	Vec2 _vector;
 
 	bool _showVestment;
-
 	Vec2 _prePosition;  //上一帧的位置
+
 };
 
 #endif

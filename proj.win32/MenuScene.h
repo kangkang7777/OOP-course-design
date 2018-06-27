@@ -16,13 +16,10 @@ public:
 
 	void menuStartCallback(cocos2d::Ref* pSender);
 	void menuSettingCallback(cocos2d::Ref* pSender);
-	void gameNameEvent(Ref * pSender, TextField::EventType type);
-	void menuPlayerCallback(Ref * pSender);
 	void menuResetNameCallback(Ref * pSender);
 
 	TextField * gameName;
 
-	// implement the "static create()" method manually
 	CREATE_FUNC(MenuScene);
 };
 

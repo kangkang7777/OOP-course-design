@@ -128,23 +128,6 @@ void Division::divide()
 
 }
 
-void Division::addWeight(float w)
-{
-	_weight += w;
-
-}
-
-void Division::setWeight(float w)
-{
-	_weight = w;
-
-}
-
-float Division::getWeight()
-{
-	return _weight;
-}
-
 void Division::setVelocity(Vec2 v)
 {
 	_vector = v;

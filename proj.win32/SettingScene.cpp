@@ -142,10 +142,21 @@ void SettingScene::soundCallback(Ref* pSender)
 		SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 		UserDefault::getInstance()->setBoolForKey("musicOff", true);
 	}
-
 }
 
+void SettingScene::playCallback(Ref* pSender)
+{
 
+	MenuItemToggle* playToggleMenuItem = (MenuItemToggle *)pSender;
+	if (playToggleMenuItem->getSelectedIndex() == 0)
+	{
+		_flag_ = 0;
+	}
+	else if (playToggleMenuItem->getSelectedIndex() == 1)
+	{
+		_flag_ = 1;
+	}
+}
 
 void SettingScene::settingReturnCallback(Ref* pSender)
 {

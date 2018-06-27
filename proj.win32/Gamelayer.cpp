@@ -5,6 +5,8 @@ enum GameLayerZOrder
 	GAME_LAYER_BACKGROUND_Z,
 	GAME_LAYER_MAP_Z,
 	GAME_LAYER_SPRITE_Z,
+	GAME_LAYER_TIME_Z,
+	GAME_LAYER_SCORE_Z
 };
 
 GameLayer::GameLayer()
@@ -63,13 +65,14 @@ bool GameLayer::init()
 	_joySteer->setVisible(false);
 
 	auto m_listener = EventListenerTouchOneByOne::create();
+	//m_listener->onTouchBegan = CC_CALLBACK_2(GameLayer::onTouchBegan, this);
+	//m_listener->onTouchMoved = CC_CALLBACK_2(GameLayer::onTouchMoved, this);
+	//m_listener->onTouchEnded = CC_CALLBACK_2(GameLayer::onTouchEnded, this);
 	m_listener->onTouchBegan = CC_CALLBACK_2(GameLayer::onTouchBegan, this);
 	m_listener->onTouchMoved = CC_CALLBACK_2(GameLayer::onTouchMoved, this);
 	m_listener->onTouchEnded = CC_CALLBACK_2(GameLayer::onTouchEnded, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(m_listener, this);
 	
-	//
-
 	//分数榜
 	_scoreBoard = Node::create();
 	_scoreBoard->setContentSize(Size(200, 200));
@@ -93,12 +96,12 @@ bool GameLayer::init()
 	//倒计时
 	_timeLabel = Label::createWithSystemFont("XX:XX:XX", "Arial", 30);
 	_timeBoard = Node::create();
-	_timeBoard->setContentSize(Size(200, 200));
+	_timeBoard->setContentSize(Size(1280, 720));
 	_timeBoard->setAnchorPoint(Point(1, 1));
 	_timeBoard->setPosition(800, 900);
 	this->addChild(_timeBoard);
-	_timeBoard->addChild(_timeLabel, 4);
-	_timeLabel->setPosition(0, 0);
+	_timeBoard->addChild(_timeLabel, GAME_LAYER_TIME_Z);
+	_timeLabel->setPosition(1100, 500);
 	return true;
 }
 
@@ -111,15 +114,30 @@ void GameLayer::update(float dt)
 	updateView();
 	collideRival(); 
 	updateonExit();
-
-	//updateplayermove_touch(_player);
-	updateplayermove_key(_player);
+	if (_flag_)
+		updateplayermove_touch(_player);
+	else
+		updateplayermove_key(_player);
 }
 
 void GameLayer::timeCountDown(float dt)
 {
 	maxTime -= 1;
 	_timeLabel->setString(StringUtils::format("%d : %d", maxTime / 60, maxTime % 60));
+	if (maxTime == 0)
+	{
+		_timeLabel->setVisible(false);
+		_playerscore = Label::createWithSystemFont(StringUtils::format("Game Over! Your Score is: %d", _player->getTotalScore()), "Arial", 30);
+		_score = Node::create();
+		_score->setContentSize(Size(1280, 720));
+		_score->setAnchorPoint(Point(1, 1));
+		_score->setPosition(800, 900);
+		this->addChild(_score,100);
+		_score->addChild(_playerscore, GAME_LAYER_SCORE_Z);
+		_playerscore->setPosition(1150, 250);
+	}
+	else if(maxTime == -3)
+		callbackgameover();
 }
 
 //键盘操作
@@ -201,10 +219,6 @@ void GameLayer::initPlayer()
 	_player = Player::create(Vec2(xPosition, yPosition), _map);
 	_player->setLocalZOrder(_player->getTotalScore());
 	_map->addChild(_player);
-	//视角跟随主角
-	//auto s = Director::getInstance()->getWinSize();
-	//_map->runAction(Follow::create(_player, Rect(0, 0, s.width * 3, s.height * 3)));
-
 }
 
 //敌人初始化(AI)
@@ -263,7 +277,7 @@ void GameLayer::initPrick()
 //刺球添加
 void GameLayer::startAddPrick(float dt)
 {
-	this->schedule(schedule_selector(GameLayer::addPrick), 5);
+	this->schedule(schedule_selector(GameLayer::addPrick), 10);
 }
 
 void GameLayer::addPrick(float dt)
@@ -318,6 +332,7 @@ void GameLayer::updateplayermove_touch(Player * player)
 	    player->setVec(_touchEventVec);
 }
 
+//人工zz
 void GameLayer::updaterivalmove(float dt)
 {
 	for (auto item : _rival)
@@ -326,17 +341,16 @@ void GameLayer::updaterivalmove(float dt)
 		if (rival == NULL&&Random(0,1))
 		{
 			break;
-		}
-		
+		}	
 		Vec2 Rand(Random(-5, 5), Random(-5, 5));
 		Vec2 vec = _player->getPosition() - rival->getPosition() + Rand;
 		vec.normalize();
 		vec = vec *1.5;
-		if (rival->getTotalWeight() > _player->getTotalWeight()*MIN_CHASE_MULTIPLE)
+		if (rival->getTotalScore() > _player->getTotalScore()*MIN_CHASE_MULTIPLE)
 		{
 			rival->setVec(vec);
 		}
-		else if (_player->getTotalWeight() > rival->getTotalWeight()*MIN_CHASE_MULTIPLE)
+		else if (_player->getTotalScore() > rival->getTotalScore()*MIN_CHASE_MULTIPLE)
 		{
 			rival->setVec(-vec);
 		}
@@ -349,12 +363,11 @@ void GameLayer::updaterivalmove(float dt)
 
 void GameLayer::updateView()
 {
+	auto f = [](auto a, auto b) {return(a < b) ? a : b; };
 	auto rect = _player->getPlayerRect();
-
 	float scaleX = DESIGN_SCREEN_WIDTH / (DESIGN_SCREEN_WIDTH + rect.size.width);
 	float scaleY = DESIGN_SCREEN_HEIGHT / (DESIGN_SCREEN_HEIGHT + rect.size.height);
-	_mapScale = (scaleX < scaleY) ? scaleX : scaleY;
-
+	_mapScale = f(scaleX, scaleY);
 	float dx = rect.origin.x*_mapScale - DESIGN_SCREEN_WIDTH / 2;
 	float dy = rect.origin.y*_mapScale - DESIGN_SCREEN_HEIGHT / 2;
 
@@ -370,7 +383,7 @@ void GameLayer::updateFoods()
 	for (auto item : _rival)
 	{
 		auto rival = item.second;
-		if (rival != NULL)
+		if (rival != NULL && rival->isVisible())
 		{
 			collideFoods(rival);
 		}
@@ -387,11 +400,9 @@ void GameLayer::collideFoods(Player * player)
 			if (player->collideFoods(food))
 			{
 				food->setVisible(false);
-				float time = rand() % 10 + 10;//食物再次出现的Δt
 				break;
 			}
 		}
-
 	}
 }
 
@@ -438,7 +449,6 @@ void GameLayer::updateRival()
 		auto rival = item.second;
 		if (rival != NULL)
 		{
-			//rival->AI(m_map, m_sporeArray);
 			rival->updateDivision();
 		}
 	}
@@ -460,6 +470,8 @@ void GameLayer::collideRival()
 					_player->resetPlayer();
 					break;
 				}
+				else
+					rival->resetPlayer();
 			}
 		}
 	}
@@ -493,18 +505,12 @@ void GameLayer::collideRival()
 				}
 			}
 		}
-
 	}
 }
 
 void GameLayer::resetFoods(Node * node)
 {
 	node->setVisible(true);
-}
-
-void GameLayer::resetPlayer()
-{
-
 }
 
 void GameLayer::onExit()
@@ -519,12 +525,14 @@ void GameLayer::updateonExit()
 	auto ESC = EventKeyboard::KeyCode::KEY_ESCAPE;
 	if (keys[ESC])
 	{
-		Director::getInstance()->pushScene(Gamepause::createScene());
-		//Director::getInstance()->replaceScene(Gamepause::createScene());
-		//Director::getInstance()->popScene();
+		callbackgameover();
 		flag=2;
 	}
+}
 
+void GameLayer::callbackgameover()
+{
+	Director::getInstance()->pushScene(TransitionFade::create(1.0f, GamePause::createScene()));
 }
 
 void GameLayer::initDataDefault()

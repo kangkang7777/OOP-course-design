@@ -5,14 +5,14 @@
 #include "ui\CocosGUI.h"
 #include "SimpleAudioEngine.h"
 #include "cocos-ext.h"
-#include "Function.h"
+//#include "Function.h"
 #include "Player.h"
 #include "Entity.h"
 #include "Foods.h"
 #include "Prick.h"
 #include "Division.h"
 #include "GameScene.h"
-#include "SettingScene.h"
+
 
 USING_NS_CC_EXT;
 USING_NS_CC;
@@ -21,8 +21,10 @@ using namespace ui;
 
 class Player;
 class Foods;
-class Spore;
 class Prick;
+
+extern int Random(int min, int max);
+extern int _flag_;
 
 class GameLayer : public Layer {
 public:
@@ -41,11 +43,9 @@ public:
 	bool isKeyPressed(EventKeyboard::KeyCode keyCode);
 	
 	//touch event
-	
 	bool onTouchBegan(Touch *touch, Event *event);
 	void onTouchMoved(Touch *touch, Event *event);
 	void onTouchEnded(Touch *touch, Event *event);
-	
 	
 	//初始化
 	void initDataDefault();
@@ -61,8 +61,8 @@ public:
 	void updatePrick();		//更新绿刺
 
 	void updaterivalmove(float dt);
-	void updateplayermove_key(Player *player);      //所有player的移动
-	void updateplayermove_touch(Player *player);    
+	void updateplayermove_key(Player *player);      //键盘移动
+	void updateplayermove_touch(Player *player);    //鼠标移动
 	void updateonExit();
 
 	void startAddPrick(float dt);
@@ -74,9 +74,8 @@ public:
 	void scoreRank(float dt);                     //分数
 	void randomResetFoods(float dt);            //随机重置食物
 	void resetFoods(Node * node);		//重置食物
-	void resetPlayer();
-	//void sendTimeChange(float dt);
-	void timeCountDown(float dt);
+	void timeCountDown(float dt);      //倒计时
+	void callbackgameover();          //退出回调
 
 private:
 	//用以储存按下的键
@@ -95,13 +94,15 @@ private:
 	Label* label2;
 	Label* label3;
 	Label* labelMy;
-	std::string name[20] = { "Sydi","Soo","Ali","Stern","Alica","Owen","Fans","Quene","Meimen","Prik","Greg","Laura","Edward","Barbara"
-		,"Yang","Lynn","Pete","Llyod" };
-
 	Label * _timeLabel;
-	int maxTime = 300;
+	Label * _playerscore;
+	int maxTime = GAME_TOTAL_TIME;
 	Node * _timeBoard;
+	Node * _score;
 	Sprite * _joySteer;
+	std::string name[20] = { "Sydi","Soo","Ali","Stern","Alica","Owen","Fans","Quene","Allie","Prik","Greg","Laura","Edward","Barbara"
+		,"Elizabeth","Lynn","Pete","Llyod" };
+
 };
 
 #endif
